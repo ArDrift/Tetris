@@ -9,16 +9,3 @@ def rotate(tetro):
     newunits.append(newlista)
       
   tetro.units = newunits
-
-
-def move(tetro, irany):
-  if irany == "f":
-    tetro.pos[1] -= 1
-  elif irany == "l":
-    tetro.pos[1] += 1
-  elif irany == "b":
-    tetro.pos[0] -= 2
-  elif irany == "j":
-    tetro.pos[0] += 2
-
-

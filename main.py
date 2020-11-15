@@ -4,11 +4,11 @@ import pyconio
 from control import *
 from draw import *
 
-def mainloop(shape):
+def mainloop(shape, fsize):
   pyconio.settitle("Tetris")
   with pyconio.rawkeys():
     while True:
-      field(20 + 2, 20)
+      field(fsize[0] + 1, fsize[1])
       shape.print()
       if pyconio.kbhit():
         key = pyconio.getch()
@@ -16,23 +16,23 @@ def mainloop(shape):
         if key == pyconio.UP:
           rotate(shape)
         elif key == pyconio.DOWN:
-          move(shape, "l")
+          shape.pos[1] = min(shape.pos[1] + 1, fsize[1])
         elif key == pyconio.LEFT:
-          move(shape, "b")
+          shape.pos[0] = max(shape.pos[0] - 2, 2)
         elif key == pyconio.RIGHT:
-          move(shape, "j")
+          shape.pos[0] = min(shape.pos[0] + 2, fsize[0])
         elif key == pyconio.ESCAPE:
           break
-      pyconio.flush()
+        pyconio.flush()
 
 
 def main():
+  fieldsize = [20, 20]
   shapes = ["I", "J", "L", "O", "S", "T", "Z"]
-  #field(20 + 2, 20)
   pyconio.clrscr()
   elem = Tetromino("I", 10, 1)
 
-  mainloop(elem)
+  mainloop(elem, fieldsize)
 
 
 main()
