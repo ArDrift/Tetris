@@ -21,3 +21,5 @@ def move(tetro, irany):
     tetro.pos[0] -= 2
   elif irany == "j":
     tetro.pos[0] += 2
+
+
