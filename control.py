@@ -9,7 +9,6 @@ def rotate(tetro):
     newunits.append(newlista)
       
   tetro.units = newunits
-  return tetro
 
 
 def move(tetro, irany):
