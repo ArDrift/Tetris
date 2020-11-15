@@ -4,19 +4,17 @@ import pyconio
 
 def field(w, h):
   for y in range(h + 1):
-    for x in range(2):
-      pyconio.gotoxy(x*w, y + 1)
+    for x in range(0, 2):
+      pyconio.gotoxy(x*w + 1, y + 1)
       pyconio.write("║")
    
     pyconio.write("\n")
     
-  pyconio.gotoxy(0, h + 1)
+  pyconio.gotoxy(1, h + 1)
   pyconio.write("╚")
   for x in range(w - 1):
     pyconio.write("═")
   pyconio.write("╝")
-  
-  pyconio.write("\n")
   
   pyconio.flush()
 
@@ -58,7 +56,7 @@ class Tetromino:
           res += " " * 2
       if sorszam != len(self.units) - 1:
         res += ("\n")
-      
+
     return "{}{}".format(pyconio.textcolors[self.color], res)
 
 
