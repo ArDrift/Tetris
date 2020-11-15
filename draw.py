@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import pyconio
+import colorama
+from control import *
 
 def field(w, h):
-  pyconio.clrscr()
   for y in range(h + 1):
     for x in range(2):
       pyconio.gotoxy(x*w, y + 1)
@@ -23,7 +24,7 @@ def field(w, h):
 
 
 class Tetromino:
-  def __init__(self, shape):
+  def __init__(self, shape, posx, posy):
     if shape == "I":
       self.units = [[1, 1, 1, 1]]
       self.color = pyconio.CYAN
@@ -45,6 +46,8 @@ class Tetromino:
     elif shape == "Z":
       self.units = [[1, 1, 0], [0, 1, 1]]
       self.color = pyconio.RED
+      
+    self.pos = [posx, posy]
 
 
   def __str__(self):
@@ -61,46 +64,47 @@ class Tetromino:
     return "{}{}".format(pyconio.textcolors[self.color], res)
 
 
-def rotate(self):
-  newunits = []
-  for elem in range(len(self.units[0])):
-    newlista = []
-    for lista in range(len(self.units) - 1, -1, -1):
-      newlista.append(self.units[lista][elem])
-    newunits.append(newlista)
-      
-  self.units = newunits
-  return self
+  def print(self):
+    ujsor = 0
+    pyconio.gotoxy(self.pos[0], self.pos[1])
+    for c in str(self):
+      if c == "\n":
+        ujsor += 1
+        pyconio.gotoxy(self.pos[0], self.pos[1] + ujsor)
+      else:
+        pyconio.write(c)
 
 
 def mainloop(shape):
-  tet = shape
+  pyconio.settitle("Tetris")
   with pyconio.rawkeys():
     while True:
+      field(20 + 2, 20)
+      shape.print()
       if pyconio.kbhit():
         key = pyconio.getch()
+        pyconio.clrscr()
         if key == pyconio.UP:
-          pyconio.clrscr()
-          for i in range(len(tet)):
-            pyconio.gotoxy(0, i * 5)
-            pyconio.write(rotate(tet[i]))
+          rotate(shape)
           pyconio.flush()
+        elif key == pyconio.DOWN:
+          move(shape, "l")
+        elif key == pyconio.LEFT:
+          move(shape, "b")
+        elif key == pyconio.RIGHT:
+          move(shape, "j")
         elif key == pyconio.ESCAPE:
           break
+      pyconio.flush()
 
 
 def main():
   shapes = ["I", "J", "L", "O", "S", "T", "Z"]
   #field(20 + 1, 20)
   pyconio.clrscr()
-  elemek = []
-  for shape in shapes:
-    elemek.append(Tetromino(shape))
-  #for e in range(len(elemek)):
-  #  pyconio.gotoxy(0, e * 5)
-  #  pyconio.write(rotate(elemek[e]) ,end="\n")
-  #pyconio.flush()
-  mainloop(elemek)
+  elem = Tetromino("I", 10, 1)
+
+  mainloop(elem)
 
 
 main()
