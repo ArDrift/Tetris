@@ -14,28 +14,20 @@ def mainloop(shape, fsize):
     """
     pyconio.settitle("Tetris")
     game_sec = math.floor(time.time())
+    draw_screen(shape, fsize)
+    ingame = True
+
     with pyconio.rawkeys():
-        while True:
-            field(fsize)
-            shape.print()
+        while ingame:
             current_sec = math.floor(time.time())
             if pyconio.kbhit():
-                key = pyconio.getch()
-                pyconio.clrscr()
-                if key == pyconio.UP:
-                    rotate(shape)
-                elif key == pyconio.DOWN:
-                    shape.pos[1] = min(shape.pos[1] + 1, fsize - 1)
-                elif key == pyconio.LEFT:
-                    shape.pos[0] = max(shape.pos[0] - 2, 2)
-                elif key == pyconio.RIGHT:
-                    shape.pos[0] = min(shape.pos[0] + 2, fsize)
-                elif key == pyconio.ESCAPE:
-                    break
+                ingame = control_ingame(shape, fsize)
+                draw_screen(shape, fsize)
+            # Fall mechanism
             if shape.pos[1] < fsize - 1 and current_sec == game_sec:
-                pyconio.clrscr()
                 shape.pos[1] += 1
                 game_sec += 1
+                draw_screen(shape, fsize)
             pyconio.flush()
 
 

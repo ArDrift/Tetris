@@ -2,7 +2,7 @@
 
 import pyconio
 
-def field(s):
+def draw_field(s):
     """
     Prints a playing field indicated with box-drawing characters.
     The field's size should be specified with an integer (here s).
@@ -21,6 +21,13 @@ def field(s):
     pyconio.write("╝")
 
     pyconio.flush()
+
+
+def draw_screen(shape, fsize):
+   pyconio.clrscr()
+   draw_field(fsize)
+   shape.print()
+   pyconio.flush()
 
 
 class Tetromino:
