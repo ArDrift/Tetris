@@ -6,7 +6,7 @@ import math
 from control import *
 from draw import *
 
-def mainloop(shape, fsize):
+def mainloop(tetro, fsize):
     """
     Prints the field and the shape selected in main, in its given position,
     then you can control it with UP-DOWN-LEFT-RIGHT as in the Tetris game.
@@ -14,20 +14,20 @@ def mainloop(shape, fsize):
     """
     pyconio.settitle("Tetris")
     game_sec = math.floor(time.time())
-    draw_screen(shape, fsize)
+    draw_screen(tetro, fsize)
     ingame = True
 
     with pyconio.rawkeys():
         while ingame:
             current_sec = math.floor(time.time())
             if pyconio.kbhit():
-                ingame = control_ingame(shape, fsize)
-                draw_screen(shape, fsize)
+                ingame = control_ingame(tetro, fsize)
+                draw_screen(tetro, fsize)
             # Fall mechanism
-            if within_boundary(shape, fsize - 1) and current_sec == game_sec:
-                shape.pos[1] += 1
+            if within_boundary(tetro, fsize - 1) and current_sec == game_sec:
+                tetro.pos[1] += 1
                 game_sec += 1
-                draw_screen(shape, fsize)
+                draw_screen(tetro, fsize)
             pyconio.flush()
 
 

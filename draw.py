@@ -23,10 +23,10 @@ def draw_field(s):
     pyconio.flush()
 
 
-def draw_screen(shape, fsize):
+def draw_screen(tetro, fsize):
    pyconio.clrscr()
    draw_field(fsize)
-   shape.print()
+   tetro.print()
    pyconio.flush()
 
 

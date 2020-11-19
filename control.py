@@ -19,33 +19,33 @@ def rotate(tetro):
     return rotated
 
 
-def control_ingame(shape, fsize):
+def control_ingame(tetro, fsize):
     key = pyconio.getch()
     if key == pyconio.UP:
-        rotatedshape = rotate(shape)
+        rotatedshape = rotate(tetro)
         if within_boundary(rotatedshape, fsize):
-            shape.units = rotatedshape.units
+            tetro.units = rotatedshape.units
             rotatedshape = None
     elif key == pyconio.DOWN:
-        lowershape = Tetromino(shape.shape, shape.pos[0], shape.pos[1])
-        lowershape.units = shape.units
+        lowershape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
+        lowershape.units = tetro.units
         lowershape.pos[1] += 1
         if within_boundary(lowershape, fsize):
-            shape.pos[1] = shape.pos[1] + 1#min(shape.pos[1] + 1, fsize - 1)
+            tetro.pos[1] += 1
             lowershape = None
     elif key == pyconio.LEFT:
-        leftshape = Tetromino(shape.shape, shape.pos[0], shape.pos[1])
-        leftshape.units = shape.units
+        leftshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
+        leftshape.units = tetro.units
         leftshape.pos[0] -= 1
         if within_boundary(leftshape, fsize):
-            shape.pos[0] = shape.pos[0] - 1#max(shape.pos[0] - 1, 2)
+            tetro.pos[0] -= 1
             leftshape = None
     elif key == pyconio.RIGHT:
-        rightshape = Tetromino(shape.shape, shape.pos[0], shape.pos[1])
-        rightshape.units = shape.units
+        rightshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
+        rightshape.units = tetro.units
         rightshape.pos[0] += 1
         if within_boundary(rightshape, fsize):
-            shape.pos[0] = shape.pos[0] + 1#min(shape.pos[0] + 1, fsize)
+            tetro.pos[0] += 1
             rightshape = None
     elif key == pyconio.ESCAPE:
         return False
@@ -53,20 +53,20 @@ def control_ingame(shape, fsize):
     return True
 
 
-def within_boundary(shape, fsize):
+def within_boundary(tetro, fsize):
     # Determine relative distance from start pos
     rmost = 0
-    for s in range(len(shape.units)):
-        for o in range(len(shape.units[s])):
-            if shape.units[s][o] == 1 and o > rmost:
+    for s in range(len(tetro.units)):
+        for o in range(len(tetro.units[s])):
+            if tetro.units[s][o] == 1 and o > rmost:
                 rmost = o
 
-    rmostposx = rmost + shape.pos[0]
-    lmostposy = len(shape.units) - 1 + shape.pos[1]
+    rmostposx = rmost + tetro.pos[0]
+    lmostposy = len(tetro.units) - 1 + tetro.pos[1]
 
     # Outside of x or outside of y
     #print("\t RM: {} LM: {}, rmost={}".format(rmostposx, lmostposy, rmost))
-    if shape.pos[0] <= 0 or rmostposx > fsize // 2 or lmostposy > fsize:
+    if tetro.pos[0] <= 0 or rmostposx > fsize // 2 or lmostposy > fsize:
         return False
 
     return True
