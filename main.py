@@ -28,16 +28,11 @@ def mainloop(tetro, fsize):
                 tetro.pos[1] += 1
                 game_sec += 1
                 draw_screen(tetro, fsize)
-            pyconio.flush()
 
 
 def main():
     fieldsize = 20
-    shapes = ["I", "J", "L", "O", "S", "T", "Z"]
-    pyconio.clrscr()
-    elem = Tetromino("I", 5, 0)
-
-    mainloop(elem, fieldsize)
+    mainloop(generate_random([5,0]), fieldsize)
 
 
 main()

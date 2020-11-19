@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from draw import Tetromino
+import random
 import pyconio
 
 def rotate(tetro):
@@ -17,6 +18,11 @@ def rotate(tetro):
     rotated = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
     rotated.units = newunits
     return rotated
+
+
+def generate_random(pos):
+    shapes = ["I", "J", "L", "O", "S", "T", "Z"]
+    return Tetromino(random.choice(shapes), pos[0], pos[1])
 
 
 def control_ingame(tetro, fsize):
@@ -65,7 +71,6 @@ def within_boundary(tetro, fsize):
     lmostposy = len(tetro.units) - 1 + tetro.pos[1]
 
     # Outside of x or outside of y
-    #print("\t RM: {} LM: {}, rmost={}".format(rmostposx, lmostposy, rmost))
     if tetro.pos[0] <= 0 or rmostposx > fsize // 2 or lmostposy > fsize:
         return False
 
