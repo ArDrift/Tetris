@@ -24,7 +24,7 @@ def mainloop(shape, fsize):
                 ingame = control_ingame(shape, fsize)
                 draw_screen(shape, fsize)
             # Fall mechanism
-            if shape.pos[1] < fsize - 1 and current_sec == game_sec:
+            if within_boundary(shape, fsize - 1) and current_sec == game_sec:
                 shape.pos[1] += 1
                 game_sec += 1
                 draw_screen(shape, fsize)
@@ -35,7 +35,7 @@ def main():
     fieldsize = 20
     shapes = ["I", "J", "L", "O", "S", "T", "Z"]
     pyconio.clrscr()
-    elem = Tetromino("T", 10, 1)
+    elem = Tetromino("I", 5, 0)
 
     mainloop(elem, fieldsize)
 

@@ -61,6 +61,7 @@ class Tetromino:
             self.color = pyconio.RED
 
         self.pos = [posx, posy]
+        self.shape = shape
 
 
     def __str__(self):
@@ -90,10 +91,10 @@ class Tetromino:
         not the beginning of the new line.
         """
         ujsor = 0
-        pyconio.gotoxy(self.pos[0], self.pos[1])
+        pyconio.gotoxy(self.pos[0] * 2, self.pos[1])
         for c in str(self):
             if c == "\n":
                 ujsor += 1
-                pyconio.gotoxy(self.pos[0], self.pos[1] + ujsor)
+                pyconio.gotoxy(self.pos[0] * 2, self.pos[1] + ujsor)
             else:
                 pyconio.write(c)
