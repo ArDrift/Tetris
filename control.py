@@ -29,28 +29,36 @@ def control_ingame(tetro, fsize):
     key = pyconio.getch()
     if key == pyconio.UP:
         rotatedshape = rotate(tetro)
-        if within_boundary(rotatedshape, fsize):
+        if not within_boundary(rotatedshape, fsize)[0]:
+            if tetro.pos[1] < fsize - within_boundary(rotatedshape, fsize)[2]:
+                if tetro.pos[0] > 5:
+                    tetro.pos[0] -= within_boundary(rotatedshape, fsize)[1]
+                else:
+                    tetro.pos[0] += within_boundary(rotatedshape, fsize)[1]
+                tetro.units = rotatedshape.units
+        else:
             tetro.units = rotatedshape.units
-            rotatedshape = None
+        rotatedshape = None
+
     elif key == pyconio.DOWN:
         lowershape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
         lowershape.units = tetro.units
         lowershape.pos[1] += 1
-        if within_boundary(lowershape, fsize):
+        if within_boundary(lowershape, fsize)[0]:
             tetro.pos[1] += 1
             lowershape = None
     elif key == pyconio.LEFT:
         leftshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
         leftshape.units = tetro.units
         leftshape.pos[0] -= 1
-        if within_boundary(leftshape, fsize):
+        if within_boundary(leftshape, fsize)[0]:
             tetro.pos[0] -= 1
             leftshape = None
     elif key == pyconio.RIGHT:
         rightshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
         rightshape.units = tetro.units
         rightshape.pos[0] += 1
-        if within_boundary(rightshape, fsize):
+        if within_boundary(rightshape, fsize)[0]:
             tetro.pos[0] += 1
             rightshape = None
     elif key == pyconio.ESCAPE:
@@ -72,6 +80,6 @@ def within_boundary(tetro, fsize):
 
     # Outside of x or outside of y
     if tetro.pos[0] <= 0 or rmostposx > fsize // 2 or lmostposy > fsize:
-        return False
+        return [False, rmost, lmostposy - tetro.pos[1]]
 
-    return True
+    return [True]
