@@ -41,30 +41,34 @@ def control_ingame(tetro, fsize):
         rotatedshape = None
 
     elif key == pyconio.DOWN:
-        lowershape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
-        lowershape.units = tetro.units
-        lowershape.pos[1] += 1
-        if within_boundary(lowershape, fsize)[0]:
+        if within_boundary(post_move(tetro, "down"), fsize)[0]:
             tetro.pos[1] += 1
-            lowershape = None
     elif key == pyconio.LEFT:
-        leftshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
-        leftshape.units = tetro.units
-        leftshape.pos[0] -= 1
-        if within_boundary(leftshape, fsize)[0]:
+        if within_boundary(post_move(tetro, "left"), fsize)[0]:
             tetro.pos[0] -= 1
-            leftshape = None
     elif key == pyconio.RIGHT:
-        rightshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
-        rightshape.units = tetro.units
-        rightshape.pos[0] += 1
-        if within_boundary(rightshape, fsize)[0]:
+        if within_boundary(post_move(tetro, "right"), fsize)[0]:
             tetro.pos[0] += 1
             rightshape = None
+
+    #if not within_boundary(shape, fsize)[0] and within_boundary(shape, fsize)[2]:
     elif key == pyconio.ESCAPE:
         return False
 
     return True
+
+
+def post_move(tetro, dir):
+    postshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
+    postshape.units = tetro.units
+    if dir == "down":
+        postshape.pos[1] += 1
+    elif dir == "left":
+        postshape.pos[0] -= 1
+    elif dir == "right":
+        postshape.pos[0] += 1
+
+    return postshape
 
 
 def within_boundary(tetro, fsize):
