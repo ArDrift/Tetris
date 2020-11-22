@@ -29,25 +29,22 @@ def control_ingame(tetro, field):
     key = pyconio.getch()
     if key == pyconio.UP:
         rotatedshape = rotate(tetro)
-        if not within_boundary(rotatedshape, field)[0]:
-            if tetro.pos[1] < len(field) - within_boundary(rotatedshape, field)[2]:
-                if tetro.pos[0] > 5:
-                    tetro.pos[0] -= within_boundary(rotatedshape, field)[1]
-                else:
-                    tetro.pos[0] += within_boundary(rotatedshape, field)[1]
+        if not move_valid(rotatedshape, field)[0]:
+            if tetro.pos[1] < len(field) - len(rotatedshape.units)-1:
+                tetro.pos[0] -= move_valid(rotatedshape, field)[1]
                 tetro.units = rotatedshape.units
         else:
             tetro.units = rotatedshape.units
         rotatedshape = None
 
     elif key == pyconio.DOWN:
-        if within_boundary(post_move(tetro, "down"), field)[0]:
+        if move_valid(post_move(tetro, "down"), field)[0]:
             tetro.pos[1] += 1
     elif key == pyconio.LEFT:
-        if within_boundary(post_move(tetro, "left"), field)[0]:
+        if move_valid(post_move(tetro, "left"), field)[0]:
             tetro.pos[0] -= 1
     elif key == pyconio.RIGHT:
-        if within_boundary(post_move(tetro, "right"), field)[0]:
+        if move_valid(post_move(tetro, "right"), field)[0]:
             tetro.pos[0] += 1
     elif key == pyconio.ESCAPE:
         return False
@@ -68,7 +65,7 @@ def post_move(tetro, dir):
     return postshape
 
 
-def within_boundary(tetro, field):
+def move_valid(tetro, field):
     # Determine relative distance from start pos
     rmost = 0
     for s in range(len(tetro.units)):
@@ -81,7 +78,7 @@ def within_boundary(tetro, field):
 
     # Outside of x or outside of y
     if tetro.pos[0] <= 0 or rmostposx > len(field[0]) or lmostposy > len(field):
-        return [False, rmost, lmostposy - tetro.pos[1]]
+        return [False, rmost]
 
     return [True]
 

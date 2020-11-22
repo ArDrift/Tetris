@@ -24,7 +24,7 @@ def mainloop(tetro, field):
                 ingame = control_ingame(tetro, field)
                 draw_screen(tetro, field)
             # Fall mechanism
-            if within_boundary(post_move(tetro, "down"), field)[0]:
+            if move_valid(post_move(tetro, "down"), field)[0]:
                 if current_sec == game_sec:
                     tetro.pos[1] += 1
                     game_sec += 1
