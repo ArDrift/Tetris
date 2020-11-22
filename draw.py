@@ -98,3 +98,16 @@ class Tetromino:
                 pyconio.gotoxy(self.pos[0] * 2, self.pos[1] + ujsor)
             else:
                 pyconio.write(c)
+
+
+def print_field(field):
+    print("")
+    print("    ", end="")
+    for i in range(len(field[0])):
+        print(i, end=" ")
+    print("")
+    for s in range(len(field)):
+        print("{}{:2}".format(pyconio.textcolors[pyconio.WHITE], s), end=": ")
+        for o in range(len(field[s])):
+            print("{}{}".format(pyconio.textcolors[pyconio.RED], field[s][o]), end=" ")
+        print("")
