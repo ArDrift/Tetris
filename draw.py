@@ -2,32 +2,53 @@
 
 import pyconio
 
-def draw_field(s):
+def draw_field(field):
     """
-    Prints a playing field indicated with box-drawing characters.
-    The field's size should be specified with an integer (here s).
+    Prints the playing field according to the its current state,
+    indicated with box-drawing characters and block elements.
     """
     pyconio.textcolor(pyconio.WHITE)
-    for y in range(s):
-        for x in range(2):
-            pyconio.gotoxy(x*(s+1) + 1, y + 1)
-            pyconio.write("║")
-        pyconio.write("\n")
+    pyconio.gotoxy(1, 0)
+    pyconio.write("╔" + "═" * len(field) + "╗")
+    for line in range(len(field)):
+        pyconio.gotoxy(1, line + 1)
+        pyconio.textcolor(pyconio.WHITE)
+        pyconio.write("║")
+        for row in range(len(field[line])):
+            if field[line][row] != 0:
+                pyconio.textcolor(get_color(field[line][row]))
+                pyconio.write("█" * 2)
+            else:
+                pyconio.write(" " * 2)
+        pyconio.textcolor(pyconio.WHITE)
+        pyconio.write("║")
 
-    pyconio.gotoxy(1, s + 1)
-    pyconio.write("╚")
-    for x in range(s):
-        pyconio.write("═")
-    pyconio.write("╝")
-
-    pyconio.flush()
+    pyconio.gotoxy(1, len(field) + 1)
+    pyconio.write("╚" + "═" * len(field) + "╝")
 
 
-def draw_screen(tetro, fsize):
+def draw_screen(tetro, field):
    pyconio.clrscr()
-   draw_field(fsize)
+   draw_field(field)
    tetro.print()
    pyconio.flush()
+
+
+def get_color(shape):
+    if shape == "I":
+        return pyconio.CYAN
+    elif shape == "J":
+        return pyconio.BLUE
+    elif shape == "L":
+        return pyconio.BROWN
+    elif shape == "O":
+        return pyconio.YELLOW
+    elif shape == "S":
+        return pyconio.GREEN
+    elif shape == "T":
+        return pyconio.MAGENTA
+    elif shape == "Z":
+        return pyconio.RED
 
 
 class Tetromino:
@@ -40,27 +61,21 @@ class Tetromino:
     def __init__(self, shape, posx, posy):
         if shape == "I":
             self.units = [[1, 1, 1, 1]]
-            self.color = pyconio.CYAN
         elif shape == "J":
             self.units = [[1, 0, 0], [1, 1, 1]]
-            self.color = pyconio.BLUE
         elif shape == "L":
             self.units = [[0, 0, 1], [1, 1, 1]]
-            self.color = pyconio.BROWN
         elif shape == "O":
             self.units = [[1, 1], [1, 1]]
-            self.color = pyconio.YELLOW
         elif shape == "S":
             self.units = [[0, 1, 1], [1, 1, 0]]
-            self.color = pyconio.GREEN
         elif shape == "T":
             self.units = [[0, 1, 0], [1, 1, 1]]
-            self.color = pyconio.MAGENTA
         elif shape == "Z":
             self.units = [[1, 1, 0], [0, 1, 1]]
-            self.color = pyconio.RED
 
         self.pos = [posx, posy]
+        self.color = get_color(shape)
         self.shape = shape
 
 
@@ -101,13 +116,19 @@ class Tetromino:
 
 
 def print_field(field):
-    print("")
-    print("    ", end="")
+    pyconio.gotoxy(1, len(field) + 2)
+    print("  ", end="")
+    pyconio.textcolor(pyconio.WHITE)
     for i in range(len(field[0])):
         print(i, end=" ")
     print("")
-    for s in range(len(field)):
-        print("{}{:2}".format(pyconio.textcolors[pyconio.WHITE], s), end=": ")
-        for o in range(len(field[s])):
-            print("{}{}".format(pyconio.textcolors[pyconio.RED], field[s][o]), end=" ")
+    for l in range(len(field)):
+        pyconio.textcolor(pyconio.WHITE)
+        print("{:2}".format(l), end=" ")
+        for r in range(len(field[l])):
+            if field[l][r] != 0:
+                pyconio.textcolor(get_color(field[l][r]))
+            else:
+                pyconio.textcolor(pyconio.DARKGRAY)
+            print("{}".format(field[l][r]), end=" ")
         print("")

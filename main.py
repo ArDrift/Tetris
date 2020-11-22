@@ -14,7 +14,7 @@ def mainloop(tetro, fsize, field):
     """
     pyconio.settitle("Tetris")
     game_sec = math.floor(time.time())
-    draw_screen(tetro, fsize)
+    draw_screen(tetro, field)
     ingame = True
 
     with pyconio.rawkeys():
@@ -22,13 +22,13 @@ def mainloop(tetro, fsize, field):
             current_sec = math.floor(time.time())
             if pyconio.kbhit():
                 ingame = control_ingame(tetro, fsize)
-                draw_screen(tetro, fsize)
+                draw_screen(tetro, field)
             # Fall mechanism
             if within_boundary(post_move(tetro, "down"), fsize)[0]:
                 if current_sec == game_sec:
                     tetro.pos[1] += 1
                     game_sec += 1
-                    draw_screen(tetro, fsize)
+                    draw_screen(tetro, field)
             else:
                 update_field(field, tetro)
 
