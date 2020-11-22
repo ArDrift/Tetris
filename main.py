@@ -6,7 +6,7 @@ import math
 from control import *
 from draw import *
 
-def mainloop(tetro, fsize):
+def mainloop(tetro, fsize, field):
     """
     Prints the field and the shape selected in main, in its given position,
     then you can control it with UP-DOWN-LEFT-RIGHT as in the Tetris game.
@@ -24,15 +24,19 @@ def mainloop(tetro, fsize):
                 ingame = control_ingame(tetro, fsize)
                 draw_screen(tetro, fsize)
             # Fall mechanism
-            if within_boundary(tetro, fsize - 1)[0] and current_sec == game_sec:
-                tetro.pos[1] += 1
-                game_sec += 1
-                draw_screen(tetro, fsize)
+            if within_boundary(post_move(tetro, "down"), fsize)[0]:
+                if current_sec == game_sec:
+                    tetro.pos[1] += 1
+                    game_sec += 1
+                    draw_screen(tetro, fsize)
+            else:
+                update_field(field, tetro)
 
 
 def main():
     fieldsize = 20
-    mainloop(generate_random([5,0]), fieldsize)
+    field = make_field(fieldsize)
+    mainloop(make_random([5,0]), fieldsize, field)
 
 
 main()

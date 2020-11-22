@@ -20,7 +20,7 @@ def rotate(tetro):
     return rotated
 
 
-def generate_random(pos):
+def make_random(pos):
     shapes = ["I", "J", "L", "O", "S", "T", "Z"]
     return Tetromino(random.choice(shapes), pos[0], pos[1])
 
@@ -49,9 +49,6 @@ def control_ingame(tetro, fsize):
     elif key == pyconio.RIGHT:
         if within_boundary(post_move(tetro, "right"), fsize)[0]:
             tetro.pos[0] += 1
-            rightshape = None
-
-    #if not within_boundary(shape, fsize)[0] and within_boundary(shape, fsize)[2]:
     elif key == pyconio.ESCAPE:
         return False
 
@@ -87,3 +84,24 @@ def within_boundary(tetro, fsize):
         return [False, rmost, lmostposy - tetro.pos[1]]
 
     return [True]
+
+
+def make_field(fsize):
+    linelist = []
+    rowlist = []
+    for line in range(fsize):
+        for row in range(fsize // 2):
+            rowlist.append(0)
+        linelist.append(rowlist)
+        rowlist = []
+
+    return linelist
+
+
+def update_field(field, tetro):
+    for line in range(len(tetro.units)):
+        for row in range(len(tetro.units[line])):
+            if tetro.units[line][row] == 1:
+                field[tetro.pos[1] + line - 1][tetro.pos[0] + row - 1] = tetro.shape
+
+    return field
