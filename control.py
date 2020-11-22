@@ -25,29 +25,29 @@ def make_random(pos):
     return Tetromino(random.choice(shapes), pos[0], pos[1])
 
 
-def control_ingame(tetro, fsize):
+def control_ingame(tetro, field):
     key = pyconio.getch()
     if key == pyconio.UP:
         rotatedshape = rotate(tetro)
-        if not within_boundary(rotatedshape, fsize)[0]:
-            if tetro.pos[1] < fsize - within_boundary(rotatedshape, fsize)[2]:
+        if not within_boundary(rotatedshape, field)[0]:
+            if tetro.pos[1] < len(field) - within_boundary(rotatedshape, field)[2]:
                 if tetro.pos[0] > 5:
-                    tetro.pos[0] -= within_boundary(rotatedshape, fsize)[1]
+                    tetro.pos[0] -= within_boundary(rotatedshape, field)[1]
                 else:
-                    tetro.pos[0] += within_boundary(rotatedshape, fsize)[1]
+                    tetro.pos[0] += within_boundary(rotatedshape, field)[1]
                 tetro.units = rotatedshape.units
         else:
             tetro.units = rotatedshape.units
         rotatedshape = None
 
     elif key == pyconio.DOWN:
-        if within_boundary(post_move(tetro, "down"), fsize)[0]:
+        if within_boundary(post_move(tetro, "down"), field)[0]:
             tetro.pos[1] += 1
     elif key == pyconio.LEFT:
-        if within_boundary(post_move(tetro, "left"), fsize)[0]:
+        if within_boundary(post_move(tetro, "left"), field)[0]:
             tetro.pos[0] -= 1
     elif key == pyconio.RIGHT:
-        if within_boundary(post_move(tetro, "right"), fsize)[0]:
+        if within_boundary(post_move(tetro, "right"), field)[0]:
             tetro.pos[0] += 1
     elif key == pyconio.ESCAPE:
         return False
@@ -68,7 +68,7 @@ def post_move(tetro, dir):
     return postshape
 
 
-def within_boundary(tetro, fsize):
+def within_boundary(tetro, field):
     # Determine relative distance from start pos
     rmost = 0
     for s in range(len(tetro.units)):
@@ -80,7 +80,7 @@ def within_boundary(tetro, fsize):
     lmostposy = len(tetro.units) - 1 + tetro.pos[1]
 
     # Outside of x or outside of y
-    if tetro.pos[0] <= 0 or rmostposx > fsize // 2 or lmostposy > fsize:
+    if tetro.pos[0] <= 0 or rmostposx > len(field[0]) or lmostposy > len(field):
         return [False, rmost, lmostposy - tetro.pos[1]]
 
     return [True]
