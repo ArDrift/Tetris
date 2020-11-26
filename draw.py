@@ -95,7 +95,7 @@ class Tetromino:
             if sorszam != len(self.units) - 1:
                 res += ("\n")
 
-        return "{}{}".format(pyconio.textcolors[self.color], res)
+        return str(res)
 
 
     def print(self):
@@ -112,6 +112,7 @@ class Tetromino:
                 ujsor += 1
                 pyconio.gotoxy(self.pos[0] * 2, self.pos[1] + ujsor)
             else:
+                pyconio.textcolor(self.color)
                 pyconio.write(c)
 
 
