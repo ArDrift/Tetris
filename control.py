@@ -120,10 +120,11 @@ def update_field(tetro, field):
     return field
 
 
-def store_regen(tetro, field):
+def store_regen(tetro, field, next):
     update_field(tetro, field)
-    tetro = None
-    return make_random([5,0])
+    tetro = next
+    next = make_random([len(field) * 2, 0])
+    return next
 
 
 def line_full(field):

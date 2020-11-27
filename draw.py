@@ -27,8 +27,30 @@ def draw_field(field):
     pyconio.write("╚" + "═" * len(field) + "╝")
 
 
-def draw_screen(tetro, field):
+def draw_next(field, next):
+    size = 10
+    start_x = len(field) + size // 2
+    start_y = len(field) // 2 - 3
+    pyconio.gotoxy(start_x + 2, start_y - 1)
+    pyconio.write("N E X T")
+    pyconio.gotoxy(start_x, start_y)
+    pyconio.write("╔" + "═" * (size-1) + "╗")
+    for y in range((size // 2) - 1):
+        pyconio.gotoxy(start_x, start_y + 1 + y)
+        pyconio.write("║")
+        for x in range(size - 1):
+            pyconio.write(" ")
+        pyconio.write("║")
+    pyconio.gotoxy(start_x, start_y + size // 2)
+    pyconio.write("╚" + "═" * (size-1) + "╝")
+
+    next.pos = [(start_x + 2) // 2, start_y + 2]
+    next.print()
+
+
+def draw_screen(tetro, field, next):
     draw_field(field)
+    draw_next(field, next)
     tetro.print()
     pyconio.flush()
 
