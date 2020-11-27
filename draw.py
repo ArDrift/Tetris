@@ -28,10 +28,9 @@ def draw_field(field):
 
 
 def draw_screen(tetro, field):
-   pyconio.clrscr()
-   draw_field(field)
-   tetro.print()
-   pyconio.flush()
+    draw_field(field)
+    tetro.print()
+    pyconio.flush()
 
 
 def get_color(shape):

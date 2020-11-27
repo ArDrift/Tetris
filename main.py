@@ -26,14 +26,14 @@ def mainloop(tetro, field):
             # Fall mechanism
             if move_valid(post_move(tetro, "down"), field)[0]:
                 if current_sec == game_sec:
-                    tetro.pos[1] += 1
+                    if hit_tetro(post_move(tetro, "down"), field):
+                        tetro = store_regen(tetro, field)
+                    else:
+                        tetro.pos[1] += 1
                     game_sec += 1
                     draw_screen(tetro, field)
             else:
-                update_field(field, tetro)
-                tetro = None
-                tetro = make_random([5,0])
-
+                tetro = store_regen(tetro, field)
 
         #print_field(field)
 

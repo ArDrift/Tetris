@@ -30,21 +30,27 @@ def control_ingame(tetro, field):
     if key == pyconio.UP:
         rotatedshape = rotate(tetro)
         if not move_valid(rotatedshape, field)[0]:
+            # If rotated is within Y
             if tetro.pos[1] < len(field) - len(rotatedshape.units)-1:
-                tetro.pos[0] -= move_valid(rotatedshape, field)[1]
-                tetro.units = rotatedshape.units
-        else:
+                rotatedshape.pos[0] -= move_valid(rotatedshape, field)[1]
+                if not hit_tetro(rotatedshape, field):
+                    tetro.pos[0] = rotatedshape.pos[0]
+                    tetro.units = rotatedshape.units
+        elif not hit_tetro(rotatedshape, field):
             tetro.units = rotatedshape.units
         rotatedshape = None
 
     elif key == pyconio.DOWN:
-        if move_valid(post_move(tetro, "down"), field)[0]:
+        if move_valid(post_move(tetro, "down"), field)[0] and \
+        not hit_tetro(post_move(tetro, "down"), field):
             tetro.pos[1] += 1
     elif key == pyconio.LEFT:
-        if move_valid(post_move(tetro, "left"), field)[0]:
+        if move_valid(post_move(tetro, "left"), field)[0] and \
+        not hit_tetro(post_move(tetro, "left"), field):
             tetro.pos[0] -= 1
     elif key == pyconio.RIGHT:
-        if move_valid(post_move(tetro, "right"), field)[0]:
+        if move_valid(post_move(tetro, "right"), field)[0] and \
+        not hit_tetro(post_move(tetro, "right"), field):
             tetro.pos[0] += 1
     elif key == pyconio.ESCAPE:
         return False
@@ -66,21 +72,31 @@ def post_move(tetro, dir):
 
 
 def move_valid(tetro, field):
-    # Determine relative distance from start pos
     rmost = 0
-    for s in range(len(tetro.units)):
-        for o in range(len(tetro.units[s])):
-            if tetro.units[s][o] == 1 and o > rmost:
-                rmost = o
+    # Lower most y position
+    lmostposy = len(tetro.units) - 1 + tetro.pos[1]
+    for line in range(len(tetro.units)):
+        for row in range(len(tetro.units[line])):
+            # Determine rightmost unit's index
+            if tetro.units[line][row] == 1 and row > rmost:
+                rmost = row
 
     rmostposx = rmost + tetro.pos[0]
-    lmostposy = len(tetro.units) - 1 + tetro.pos[1]
-
-    # Outside of x or outside of y
+    # Outside of field (x or y)
     if tetro.pos[0] <= 0 or rmostposx > len(field[0]) or lmostposy > len(field):
         return [False, rmost]
 
     return [True]
+
+
+def hit_tetro(tetro, field):
+    for line in range(len(tetro.units)):
+        for row in range(len(tetro.units[line])):
+            #Check for conflicting already placed tetromino
+            if tetro.units[line][row] == 1 and \
+            field[tetro.pos[1] + line - 1][tetro.pos[0] + row - 1] != 0:
+                return True
+    return False
 
 
 def make_field(fsize):
@@ -95,10 +111,16 @@ def make_field(fsize):
     return linelist
 
 
-def update_field(field, tetro):
+def update_field(tetro, field):
     for line in range(len(tetro.units)):
         for row in range(len(tetro.units[line])):
             if tetro.units[line][row] == 1:
                 field[tetro.pos[1] + line - 1][tetro.pos[0] + row - 1] = tetro.shape
 
     return field
+
+
+def store_regen(tetro, field):
+    update_field(tetro, field)
+    tetro = None
+    return make_random([5,0])
