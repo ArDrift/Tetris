@@ -124,3 +124,21 @@ def store_regen(tetro, field):
     update_field(tetro, field)
     tetro = None
     return make_random([5,0])
+
+
+def line_full(field):
+    for line in field:
+        if not 0 in line:
+            return True
+    return False
+
+
+def delete_full(field):
+    for line in range(len(field)):
+        if not 0 in field[line]:
+            for row in range(len(field[line])):
+                pyconio.gotoxy(line + 1, row + 2)
+                field[line][row] = 0
+            for upperline in range(line - 1, -1, -1):
+                for row in range(len(field[upperline])):
+                    field[upperline + 1][row] = field[upperline][row]

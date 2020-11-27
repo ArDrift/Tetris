@@ -34,7 +34,9 @@ def mainloop(tetro, field):
                     draw_screen(tetro, field)
             else:
                 tetro = store_regen(tetro, field)
-
+            if line_full(field):
+                delete_full(field)
+                draw_screen(tetro, field)
         #print_field(field)
 
 
