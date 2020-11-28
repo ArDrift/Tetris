@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pyconio
+import math
 
 def ground(field):
     """
@@ -49,9 +50,13 @@ def nextsection(field, next):
 
 
 def pointsection(field, points):
-    pyconio.gotoxy(len(field) + len(field[0]), len(field))
+    pyconio.gotoxy(len(field) + len(field[0]), len(field) - 1)
     pyconio.textcolor(pyconio.WHITE)
-    pyconio.write(points)
+    pyconio.write("╔" + "═" * (int(math.log(points + 1, 10)) + 1) + "╗")
+    pyconio.gotoxy(len(field) + len(field[0]), len(field))
+    pyconio.write("║{}║".format(points))
+    pyconio.gotoxy(len(field) + len(field[0]), len(field) + 1)
+    pyconio.write("╚" + "═" * (int(math.log(points + 1, 10)) + 1) + "╝")
 
 
 def screen(tetro, field, next, points):
