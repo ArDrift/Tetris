@@ -52,11 +52,11 @@ def nextsection(field, next):
 def pointsection(field, points):
     pyconio.gotoxy(len(field) + len(field[0]), len(field) - 1)
     pyconio.textcolor(pyconio.WHITE)
-    pyconio.write("╔" + "═" * (int(math.log(points + 1, 10)) + 1) + "╗")
+    pyconio.write("╔" + "═" * (int(math.log(max(1, points), 10)) + 1) + "╗")
     pyconio.gotoxy(len(field) + len(field[0]), len(field))
     pyconio.write("║{}║".format(points))
     pyconio.gotoxy(len(field) + len(field[0]), len(field) + 1)
-    pyconio.write("╚" + "═" * (int(math.log(points + 1, 10)) + 1) + "╝")
+    pyconio.write("╚" + "═" * (int(math.log(max(1, points), 10)) + 1) + "╝")
 
 
 def screen(tetro, field, next, points):

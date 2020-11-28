@@ -100,7 +100,8 @@ def hit(tetro, field):
         for row in range(len(tetro.units[line])):
             #Check for conflicting already placed tetromino
             if tetro.units[line][row] == 1 and \
-            field[tetro.pos[1] + line - 1][tetro.pos[0] + row - 1] != 0:
+            field[max(0, tetro.pos[1] + line - 1)]\
+            [max(0, tetro.pos[0] + row - 1)] != 0:
                 return True
     return False
 
@@ -154,5 +155,9 @@ def delete_full(field):
 
     if pluspoints == 400:
         return pluspoints * 2
+    elif pluspoints == 300:
+        return pluspoints + 200
+    elif pluspoints == 200:
+        return pluspoints + 100
     else:
         return pluspoints
