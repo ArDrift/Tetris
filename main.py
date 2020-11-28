@@ -6,7 +6,7 @@ import math
 from control import *
 from draw import *
 
-def mainloop(tetro, field, next):
+def mainloop(tetro, field, next, points):
     """
     Prints the field and the shape selected in main, in its given position,
     then you can control it with UP-DOWN-LEFT-RIGHT as in the Tetris game.
@@ -14,7 +14,7 @@ def mainloop(tetro, field, next):
     """
     pyconio.settitle("Tetris")
     game_sec = math.floor(time.time())
-    draw_screen(tetro, field, next)
+    draw_screen(tetro, field, next, points)
     ingame = True
 
     with pyconio.rawkeys():
@@ -22,7 +22,7 @@ def mainloop(tetro, field, next):
             current_sec = math.floor(time.time())
             if pyconio.kbhit():
                 ingame = control_ingame(tetro, field)
-                draw_screen(tetro, field, next)
+                draw_screen(tetro, field, next, points)
             # Fall mechanism
             if move_valid(post_move(tetro, "down"), field)[0]:
                 if current_sec == game_sec:
@@ -34,7 +34,7 @@ def mainloop(tetro, field, next):
                     else:
                         tetro.pos[1] += 1
                     game_sec += 1
-                    draw_screen(tetro, field, next)
+                    draw_screen(tetro, field, next, points)
             else:
                 last = tetro
                 next.pos = [5,0]
@@ -42,7 +42,8 @@ def mainloop(tetro, field, next):
                 next = store_regen(last, field, next)
             if line_full(field):
                 delete_full(field)
-                draw_screen(tetro, field, next)
+                points += 100
+                draw_screen(tetro, field, next, points)
         #print_field(field)
 
 
@@ -50,7 +51,8 @@ def main():
     fieldsize = 20
     field = make_field(fieldsize)
     next = make_random([fieldsize * 2,0])
-    mainloop(make_random([5,0]), field, next)
+    points = 0
+    mainloop(make_random([5,0]), field, next, points)
 
 
 main()

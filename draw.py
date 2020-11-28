@@ -48,9 +48,16 @@ def draw_next(field, next):
     next.print()
 
 
-def draw_screen(tetro, field, next):
+def draw_points(field, points):
+    pyconio.gotoxy(len(field) + len(field[0]), len(field))
+    pyconio.textcolor(pyconio.WHITE)
+    pyconio.write(points)
+
+
+def draw_screen(tetro, field, next, points):
     draw_field(field)
     draw_next(field, next)
+    draw_points(field, points)
     tetro.print()
     pyconio.flush()
 
