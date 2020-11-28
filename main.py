@@ -13,6 +13,7 @@ def mainloop(tetro, field, next, points):
     You can quit with the ESCAPE key.
     """
     pyconio.settitle("Tetris")
+    draw.cursor(False)
     game_sec = math.floor(time.time())
     draw.screen(tetro, field, next, points)
     ingame = [True, 0]
@@ -47,6 +48,7 @@ def mainloop(tetro, field, next, points):
             if control.line_full(field):
                 points += control.delete_full(field)
                 draw.screen(tetro, field, next, points)
+        draw.cursor(True)
 
 
 def main():

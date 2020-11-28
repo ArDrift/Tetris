@@ -138,15 +138,30 @@ class Tetromino:
         Using this print, the tetrominoes' new lines will be written to their proper position,
         not the beginning of the new line.
         """
-        ujsor = 0
-        pyconio.gotoxy(self.pos[0] * 2, self.pos[1])
+        newline = 0
+        newrow = 0
+        start_x = self.pos[0] * 2
+        start_y = self.pos[1]
+
+        pyconio.gotoxy(start_x, start_y)
         for c in str(self):
             if c == "\n":
-                ujsor += 1
-                pyconio.gotoxy(self.pos[0] * 2, self.pos[1] + ujsor)
+                newline += 1
+                newrow = 0
+                pyconio.gotoxy(start_x, start_y + newline)
+            elif c == " ":
+                newrow += 1
+                pyconio.gotoxy(start_x + newrow, start_y + newline)
             else:
                 pyconio.textcolor(self.color)
                 pyconio.write(c)
+
+def cursor(show):
+    csi = "\033["
+    if show:
+        print(csi + "?25h")
+    else:
+        print(csi + "?25l")
 
 
 def print_field(field):
