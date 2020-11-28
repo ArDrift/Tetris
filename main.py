@@ -25,26 +25,28 @@ def mainloop(tetro, field, next, points):
                 points += ingame[1]
                 draw.screen(tetro, field, next, points)
             # Fall mechanism
-            if control.move_valid(control.post_move(tetro, "down"), field):
-                if current_sec == game_sec:
+            if current_sec == game_sec:
+                if control.move_valid(control.post_move(tetro, "down"), field):
                     if control.hit(control.post_move(tetro, "down"), field):
-                        last = tetro
-                        next.pos = [5,0]
-                        tetro = next
-                        next = control.store_regen(last, field, next)
+                        if tetro.pos[1] >= 1:
+                            last = tetro
+                            next.pos = [5,0]
+                            tetro = next
+                            next = control.store_regen(last, field, next)
+                        else:
+                            ingame = [False, points]
                     else:
                         tetro.pos[1] += 1
-                    game_sec += 1
-                    draw.screen(tetro, field, next, points)
-            else:
-                last = tetro
-                next.pos = [5,0]
-                tetro = next
-                next = control.store_regen(last, field, next)
+                else:
+                    last = tetro
+                    next.pos = [5,0]
+                    tetro = next
+                    next = control.store_regen(last, field, next)
+                game_sec += 1
+                draw.screen(tetro, field, next, points)
             if control.line_full(field):
                 points += control.delete_full(field)
                 draw.screen(tetro, field, next, points)
-        #print_field(field)
 
 
 def main():
