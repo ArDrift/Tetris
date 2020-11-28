@@ -3,8 +3,8 @@
 import pyconio
 import time
 import math
-from control import *
-from draw import *
+import control
+import draw
 
 def mainloop(tetro, field, next, points):
     """
@@ -14,45 +14,45 @@ def mainloop(tetro, field, next, points):
     """
     pyconio.settitle("Tetris")
     game_sec = math.floor(time.time())
-    draw_screen(tetro, field, next, points)
+    draw.screen(tetro, field, next, points)
     ingame = True
 
     with pyconio.rawkeys():
         while ingame:
             current_sec = math.floor(time.time())
             if pyconio.kbhit():
-                ingame = control_ingame(tetro, field)
-                draw_screen(tetro, field, next, points)
+                ingame = control.ingame(tetro, field)
+                draw.screen(tetro, field, next, points)
             # Fall mechanism
-            if move_valid(post_move(tetro, "down"), field)[0]:
+            if control.move_valid(control.post_move(tetro, "down"), field)[0]:
                 if current_sec == game_sec:
-                    if hit_tetro(post_move(tetro, "down"), field):
+                    if control.hit(control.post_move(tetro, "down"), field):
                         last = tetro
                         next.pos = [5,0]
                         tetro = next
-                        next = store_regen(last, field, next)
+                        next = control.store_regen(last, field, next)
                     else:
                         tetro.pos[1] += 1
                     game_sec += 1
-                    draw_screen(tetro, field, next, points)
+                    draw.screen(tetro, field, next, points)
             else:
                 last = tetro
                 next.pos = [5,0]
                 tetro = next
-                next = store_regen(last, field, next)
-            if line_full(field):
-                delete_full(field)
+                next = control.store_regen(last, field, next)
+            if control.line_full(field):
+                control.delete_full(field)
                 points += 100
-                draw_screen(tetro, field, next, points)
+                draw.screen(tetro, field, next, points)
         #print_field(field)
 
 
 def main():
     fieldsize = 20
-    field = make_field(fieldsize)
-    next = make_random([fieldsize * 2,0])
+    field = control.make_field(fieldsize)
+    next = control.make_random([fieldsize * 2,0])
     points = 0
-    mainloop(make_random([5,0]), field, next, points)
+    mainloop(control.make_random([5,0]), field, next, points)
 
 
 main()

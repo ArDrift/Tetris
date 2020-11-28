@@ -25,7 +25,7 @@ def make_random(pos):
     return Tetromino(random.choice(shapes), pos[0], pos[1])
 
 
-def control_ingame(tetro, field):
+def ingame(tetro, field):
     key = pyconio.getch()
     if key == pyconio.UP:
         rotatedshape = rotate(tetro)
@@ -33,24 +33,24 @@ def control_ingame(tetro, field):
             # If rotated is within Y
             if tetro.pos[1] < len(field) - len(rotatedshape.units)-1:
                 rotatedshape.pos[0] -= move_valid(rotatedshape, field)[1]
-                if not hit_tetro(rotatedshape, field):
+                if not hit(rotatedshape, field):
                     tetro.pos[0] = rotatedshape.pos[0]
                     tetro.units = rotatedshape.units
-        elif not hit_tetro(rotatedshape, field):
+        elif not hit(rotatedshape, field):
             tetro.units = rotatedshape.units
         rotatedshape = None
 
     elif key == pyconio.DOWN:
         if move_valid(post_move(tetro, "down"), field)[0] and \
-        not hit_tetro(post_move(tetro, "down"), field):
+        not hit(post_move(tetro, "down"), field):
             tetro.pos[1] += 1
     elif key == pyconio.LEFT:
         if move_valid(post_move(tetro, "left"), field)[0] and \
-        not hit_tetro(post_move(tetro, "left"), field):
+        not hit(post_move(tetro, "left"), field):
             tetro.pos[0] -= 1
     elif key == pyconio.RIGHT:
         if move_valid(post_move(tetro, "right"), field)[0] and \
-        not hit_tetro(post_move(tetro, "right"), field):
+        not hit(post_move(tetro, "right"), field):
             tetro.pos[0] += 1
     elif key == pyconio.ESCAPE:
         return False
@@ -89,7 +89,7 @@ def move_valid(tetro, field):
     return [True]
 
 
-def hit_tetro(tetro, field):
+def hit(tetro, field):
     for line in range(len(tetro.units)):
         for row in range(len(tetro.units[line])):
             #Check for conflicting already placed tetromino

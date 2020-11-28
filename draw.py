@@ -2,7 +2,7 @@
 
 import pyconio
 
-def draw_field(field):
+def ground(field):
     """
     Prints the playing field according to the its current state,
     indicated with box-drawing characters and block elements.
@@ -27,7 +27,7 @@ def draw_field(field):
     pyconio.write("╚" + "═" * len(field) + "╝")
 
 
-def draw_next(field, next):
+def nextsection(field, next):
     size = 10
     start_x = len(field) + size // 2
     start_y = len(field) // 2 - 3
@@ -48,16 +48,16 @@ def draw_next(field, next):
     next.print()
 
 
-def draw_points(field, points):
+def pointsection(field, points):
     pyconio.gotoxy(len(field) + len(field[0]), len(field))
     pyconio.textcolor(pyconio.WHITE)
     pyconio.write(points)
 
 
-def draw_screen(tetro, field, next, points):
-    draw_field(field)
-    draw_next(field, next)
-    draw_points(field, points)
+def screen(tetro, field, next, points):
+    ground(field)
+    nextsection(field, next)
+    pointsection(field, points)
     tetro.print()
     pyconio.flush()
 
