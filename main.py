@@ -15,16 +15,17 @@ def mainloop(tetro, field, next, points):
     pyconio.settitle("Tetris")
     game_sec = math.floor(time.time())
     draw.screen(tetro, field, next, points)
-    ingame = True
+    ingame = [True, 0]
 
     with pyconio.rawkeys():
-        while ingame:
+        while ingame[0]:
             current_sec = math.floor(time.time())
             if pyconio.kbhit():
                 ingame = control.ingame(tetro, field)
+                points += ingame[1]
                 draw.screen(tetro, field, next, points)
             # Fall mechanism
-            if control.move_valid(control.post_move(tetro, "down"), field)[0]:
+            if control.move_valid(control.post_move(tetro, "down"), field):
                 if current_sec == game_sec:
                     if control.hit(control.post_move(tetro, "down"), field):
                         last = tetro
@@ -41,8 +42,7 @@ def mainloop(tetro, field, next, points):
                 tetro = next
                 next = control.store_regen(last, field, next)
             if control.line_full(field):
-                control.delete_full(field)
-                points += 100
+                points += control.delete_full(field)
                 draw.screen(tetro, field, next, points)
         #print_field(field)
 
