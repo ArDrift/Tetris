@@ -161,3 +161,8 @@ def delete_full(field):
         return pluspoints + 100
     else:
         return pluspoints
+
+
+def speed_sec(level):
+    # Formula taken from https://tetris.wiki/Marathon
+    return (0.8 - ((level - 1) * 0.007)) ** (level - 1)

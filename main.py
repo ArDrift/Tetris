@@ -2,7 +2,6 @@
 
 import pyconio
 import time
-import math
 import control
 import draw
 
@@ -14,19 +13,20 @@ def mainloop(tetro, field, next, points):
     """
     pyconio.settitle("Tetris")
     draw.cursor(False)
-    game_sec = math.floor(time.time())
-    draw.screen(tetro, field, next, points)
+    game_sec = time.time()
+    level = 1
+    draw.screen(tetro, field, next, points, level)
     ingame = [True, 0]
 
     with pyconio.rawkeys():
         while ingame[0]:
-            current_sec = math.floor(time.time())
+            current_sec = time.time()
             if pyconio.kbhit():
                 ingame = control.ingame(tetro, field)
-                points += ingame[1]
-                draw.screen(tetro, field, next, points)
+                points += ingame[1] * level
+                draw.screen(tetro, field, next, points, level)
             # Fall mechanism
-            if current_sec == game_sec:
+            if round(current_sec, min(level, 2)) == round(game_sec, min(level, 2)):
                 if control.move_valid(control.post_move(tetro, "down"), field):
                     if control.hit(control.post_move(tetro, "down"), field):
                         if tetro.pos[1] >= 1:
@@ -43,11 +43,16 @@ def mainloop(tetro, field, next, points):
                     next.pos = [5,0]
                     tetro = next
                     next = control.store_regen(last, field, next)
-                game_sec += 1
-                draw.screen(tetro, field, next, points)
+                game_sec += control.speed_sec(level)
+                draw.screen(tetro, field, next, points, level)
+            # Line clear
             if control.line_full(field):
-                points += control.delete_full(field)
-                draw.screen(tetro, field, next, points)
+                points += control.delete_full(field) * level
+                draw.screen(tetro, field, next, points, level)
+            # Level up
+            if points >= level**2 * 1000:
+                level += 1
+                draw.screen(tetro, field, next, points, level)
         draw.cursor(True)
 
 

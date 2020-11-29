@@ -49,20 +49,23 @@ def nextsection(field, next):
     next.print()
 
 
-def pointsection(field, points):
-    pyconio.gotoxy(len(field) + len(field[0]), len(field) - 1)
+def valsection(field, val, posy, label):
     pyconio.textcolor(pyconio.WHITE)
-    pyconio.write("╔" + "═" * (int(math.log(max(1, points), 10)) + 1) + "╗")
-    pyconio.gotoxy(len(field) + len(field[0]), len(field))
-    pyconio.write("║{}║".format(points))
-    pyconio.gotoxy(len(field) + len(field[0]), len(field) + 1)
-    pyconio.write("╚" + "═" * (int(math.log(max(1, points), 10)) + 1) + "╝")
+    pyconio.gotoxy(len(field) + len(field[0]) - len(label), posy+1)
+    pyconio.write(label)
+    pyconio.gotoxy(len(field) + len(field[0]), posy)
+    pyconio.write("╔" + "═" * (int(math.log(max(1, val), 10)) + 1) + "╗")
+    pyconio.gotoxy(len(field) + len(field[0]), posy+1)
+    pyconio.write("║{}║".format(val))
+    pyconio.gotoxy(len(field) + len(field[0]), posy+2)
+    pyconio.write("╚" + "═" * (int(math.log(max(1, val), 10)) + 1) + "╝")
 
 
-def screen(tetro, field, next, points):
+def screen(tetro, field, next, points, level):
     ground(field)
     nextsection(field, next)
-    pointsection(field, points)
+    valsection(field, points, len(field)-1, "PTS:")
+    valsection(field, level, len(field)-4, "LVL:")
     tetro.print()
     pyconio.flush()
 
