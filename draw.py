@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import pyconio
-import math
 
 def ground(field):
     """
@@ -54,11 +53,11 @@ def valsection(field, val, posy, label):
     pyconio.gotoxy(len(field) + len(field[0]) - len(label), posy+1)
     pyconio.write(label)
     pyconio.gotoxy(len(field) + len(field[0]), posy)
-    pyconio.write("╔" + "═" * (int(math.log(max(1, val), 10)) + 1) + "╗")
+    pyconio.write("╔" + "═" * len(str(val)) + "╗")
     pyconio.gotoxy(len(field) + len(field[0]), posy+1)
     pyconio.write("║{}║".format(val))
     pyconio.gotoxy(len(field) + len(field[0]), posy+2)
-    pyconio.write("╚" + "═" * (int(math.log(max(1, val), 10)) + 1) + "╝")
+    pyconio.write("╚" + "═" * len(str(val)) + "╝")
 
 
 def screen(tetro, field, next, points, level):
