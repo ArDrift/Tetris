@@ -15,8 +15,8 @@ A program egy parancssorban futtatható Tetris játékot valósít meg (még fol
 
 - Játékmenü (indítás, dicsőségtábla, beállítások)
 - Megállítás menü (kilépés, mentés)
-- Játék közbeni felület bővítése (pontszám kijelzés)
+[x] Játék közbeni felület bővítése (pontszám kijelzés)
 [x] Véletlen elemek generálása és lefelé mozgatása a képernyőn
 [x] Következő elem kijelzése
-- Pontrendszer kidolgozása
+[x] Pontrendszer kidolgozása
 [x] Elemek kezelése egymás mellett (teljes sor kitörlése, és a többi elem lefelé mozgatása)

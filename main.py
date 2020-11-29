@@ -57,6 +57,3 @@ def main():
     next = control.make_random([fieldsize * 2,0])
     points = 0
     mainloop(control.make_random([5,0]), field, next, points)
-
-
-main()
