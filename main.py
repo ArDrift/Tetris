@@ -26,7 +26,7 @@ def mainloop(tetro, field, next, points):
                 points += ingame[1] * level
                 draw.screen(tetro, field, next, points, level)
             # Fall mechanism
-            if round(current_sec, min(level, 2)) == round(game_sec, min(level, 2)):
+            if round(current_sec, min(level, 2)) >= round(game_sec, min(level, 2)):
                 if control.move_valid(control.post_move(tetro, "down"), field):
                     if control.hit(control.post_move(tetro, "down"), field):
                         if tetro.pos[1] >= 1:
