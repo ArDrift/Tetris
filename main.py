@@ -5,7 +5,7 @@ import time
 import control
 import draw
 
-def mainloop(tetro, field, next, points):
+def mainloop(tetro, field, next, points=0, level=1):
     """
     Prints the field and the shape selected in main, in its given position,
     then you can control it with UP-DOWN-LEFT-RIGHT as in the Tetris game.
@@ -14,7 +14,6 @@ def mainloop(tetro, field, next, points):
     pyconio.settitle("Tetris")
     draw.cursor(False)
     game_sec = time.time()
-    level = 1
     draw.screen(tetro, field, next, points, level)
     ingame = [True, 0]
 
@@ -56,9 +55,13 @@ def mainloop(tetro, field, next, points):
         draw.cursor(True)
 
 
-def main():
-    fieldsize = 20
-    field = control.make_field(fieldsize)
-    next = control.make_random([fieldsize * 2,0])
-    points = 0
-    mainloop(control.make_random([5,0]), field, next, points)
+def main(mode="new", fieldsize=20):
+    if mode == "new":
+        field = control.make_field(fieldsize)
+        next = control.make_random([fieldsize * 2,0])
+        mainloop(control.make_random([5,0]), field, next)
+    elif mode == "load":
+        (field, shape, pos, next, points, level) = control.load_game("save.txt")
+        tetro = draw.Tetromino(shape, pos[0], pos[1])
+        next = draw.Tetromino(next, fieldsize * 2, 0)
+        mainloop(tetro, field, next, points, level)

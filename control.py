@@ -166,3 +166,60 @@ def delete_full(field):
 def speed_sec(level):
     # Formula taken from https://tetris.wiki/Marathon
     return (0.8 - ((level - 1) * 0.007)) ** (level - 1)
+
+
+def save_game(tetro, field, next, points, level):
+    dest = open("save.txt", "wt")
+    # Field
+    for line in range(len(field)):
+        for row in range(len(field[line])):
+            print(field[line][row], end="", file=dest)
+            if row != len(field[line])-1:
+                print(" ", end="", file=dest)
+        print("", file=dest)
+    print("", file=dest)
+    # Tetro
+    print(tetro.shape, tetro.pos[0], tetro.pos[1], file=dest)
+    print("", file=dest)
+    # Next
+    print(next.shape, file=dest)
+    print("", file=dest)
+    # Points
+    print(points, file=dest)
+    print("", file=dest)
+    # Level
+    print(level, file=dest)
+    dest.close()
+
+
+def load_game(file):
+    with open(file, "rt") as f:
+        field = []
+        section = 0
+        for line in f:
+            # Change section
+            if line == "\n":
+                section += 1
+            # Load field
+            elif section == 0:
+                sor = []
+                for elem in line.rstrip("\n").split(" "):
+                    if elem == "0":
+                        sor.append(int(elem))
+                    else:
+                        sor.append(elem)
+                field.append(sor)
+            # Tetro
+            elif section == 1:
+                shape = line.split(" ")[0]
+                pos = [int(line.split(" ")[1]),
+                       int(line.rstrip("\n").split(" ")[2])]
+            # Next
+            elif section == 2:
+                next = line.rstrip("\n")
+            elif section == 3:
+                pts = int(line.rstrip("\n"))
+            elif section == 4:
+                lvl = int(line.rstrip("\n"))
+
+    return (field, shape, pos, next, pts, lvl)
