@@ -86,6 +86,24 @@ def get_color(shape):
         return pyconio.RED
 
 
+class Shape:
+    def __init__(self, letter):
+        if letter == "I":
+             self.units = [[1, 1, 1, 1]]
+        elif letter == "J":
+            self.units = [[1, 0, 0], [1, 1, 1]]
+        elif letter == "L":
+            self.units = [[0, 0, 1], [1, 1, 1]]
+        elif letter == "O":
+            self.units = [[1, 1], [1, 1]]
+        elif letter == "S":
+            self.units = [[0, 1, 1], [1, 1, 0]]
+        elif letter == "T":
+            self.units = [[0, 1, 0], [1, 1, 1]]
+        elif letter == "Z":
+            self.units = [[1, 1, 0], [0, 1, 1]]
+
+
 class Tetromino:
     """
     This class defines a tetromino (or tetrimino as in Tetris-language):
@@ -93,25 +111,11 @@ class Tetromino:
     its color based on the standard color scheme of the Tetris game,
     and its position (X, Y integers in a list).
     """
-    def __init__(self, shape, posx, posy):
-        if shape == "I":
-            self.units = [[1, 1, 1, 1]]
-        elif shape == "J":
-            self.units = [[1, 0, 0], [1, 1, 1]]
-        elif shape == "L":
-            self.units = [[0, 0, 1], [1, 1, 1]]
-        elif shape == "O":
-            self.units = [[1, 1], [1, 1]]
-        elif shape == "S":
-            self.units = [[0, 1, 1], [1, 1, 0]]
-        elif shape == "T":
-            self.units = [[0, 1, 0], [1, 1, 1]]
-        elif shape == "Z":
-            self.units = [[1, 1, 0], [0, 1, 1]]
-
+    def __init__(self, letter, posx, posy):
+        self.units = Shape(letter).units
         self.pos = [posx, posy]
-        self.color = get_color(shape)
-        self.shape = shape
+        self.color = get_color(letter)
+        self.shape = letter
 
 
     def __str__(self):
@@ -130,7 +134,7 @@ class Tetromino:
             if sorszam != len(self.units) - 1:
                 res += ("\n")
 
-        return str(res)
+        return res
 
 
     def print(self):
@@ -164,22 +168,3 @@ def cursor(show):
         print(csi + "?25h")
     else:
         print(csi + "?25l")
-
-
-def print_field(field):
-    pyconio.gotoxy(1, len(field) + 2)
-    print("  ", end="")
-    pyconio.textcolor(pyconio.WHITE)
-    for i in range(len(field[0])):
-        print(i, end=" ")
-    print("")
-    for l in range(len(field)):
-        pyconio.textcolor(pyconio.WHITE)
-        print("{:2}".format(l), end=" ")
-        for r in range(len(field[l])):
-            if field[l][r] != 0:
-                pyconio.textcolor(get_color(field[l][r]))
-            else:
-                pyconio.textcolor(pyconio.DARKGRAY)
-            print("{}".format(field[l][r]), end=" ")
-        print("")
