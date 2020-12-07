@@ -1,30 +1,7 @@
 #!/usr/bin/env python3
 
 import pyconio
-import main
-
-
-def draw_logo(file="logo.txt"):
-    """
-    Prints the content of the given file (or logo.txt),
-    used for printing the title Tetris, in Russian, with the original colors.
-    The different letters are separated with a pipe character in the file.
-    """
-    pyconio.gotoxy(0,5)
-    pyconio.textbackground(pyconio.RESET)
-    pyconio.textcolor(pyconio.RESET)
-    colors = [pyconio.RED,pyconio.BROWN,pyconio.YELLOW,
-              pyconio.GREEN,pyconio.CYAN,pyconio.MAGENTA]
-    with open(file, "rt", encoding="utf-8") as logo:
-        for line in logo:
-            letters = line.rstrip("\n").split("|")
-            for letter in range(len(letters)):
-                pyconio.textcolor(colors[letter])
-                pyconio.write(letters[letter])
-            pyconio.write("\n")
-
-    pyconio.flush()
-
+import draw
 
 class Button:
     def __init__(self, text, function):
@@ -44,16 +21,24 @@ def main_menu(settings=None):
                Button("Betöltés", "load"),
                Button("Kilépés", "quit")]
     if settings is not None:
-        menu(buttons, settings)
+        return menu(buttons, settings)
     else:
-        menu(buttons)
+        return menu(buttons)
+
+
+def pause():
+    pyconio.clrscr()
+    buttons = [Button("Játék folytatása", "continue"),
+               Button("Mentés", "save"),
+               Button("Kilépés", "quit")]
+    return menu(buttons)
 
 
 def menu(buttons, data=None):
     pyconio.textcolor(pyconio.WHITE)
     buttons[0].active = True
     while True:
-        draw_logo()
+        draw.logo()
         for btn in buttons:
             if btn.active:
                 pyconio.textbackground(pyconio.WHITE)
@@ -62,7 +47,7 @@ def menu(buttons, data=None):
                 pyconio.textbackground(pyconio.RESET)
                 pyconio.textcolor(pyconio.RESET)
             pyconio.gotoxy(20, 20+buttons.index(btn))
-            pyconio.write(btn, end="\n")
+            pyconio.write(btn)
 
             pyconio.gotoxy(15, 30)
             pyconio.textcolor(pyconio.RESET)
@@ -94,31 +79,38 @@ def menu(buttons, data=None):
 
 def select(func, data=None):
     pyconio.clrscr()
+    # Main menu
     if func == "start":
         if data is not None:
-            main.main("new", data.size, data.level)
+            return ("new", data.size, data.level)
         else:
-            main.main()
+            return ("new", 20, 1)
         pyconio.clrscr()
     elif func == "toplist":
-        list_scores(get_scores(), (20,20))
+        return list_scores(get_scores(), (20,20))
     elif func == "options":
-        options((20, 20), data)
+        return options((20, 20), data)
     elif func == "load":
-        main.main("load")
+        return ("load", 20, 1)
         pyconio.clrscr()
     elif func == "quit":
         pyconio.textbackground(pyconio.RESET)
         pyconio.textcolor(pyconio.RESET)
         pyconio.clrscr()
+        draw.cursor(True)
+        return None
+    # Options menu
     elif func == "size":
-        return (func, setting_adjust(data.size, "Méret", 20, 100))
+        return (func, setting_adjust(data.size, "Méret", 20, 100, 2))
     elif func == "level":
         return (func, setting_adjust(data.level, "Kezdő szint", 1, 10))
+    # Pause menu
+    else:
+        return func
 
 
-def setting_adjust(setting, label, min_val, max_val):
-    draw_logo()
+def setting_adjust(setting, label, min_val, max_val, delta=1):
+    draw.logo()
     pyconio.textbackground(pyconio.RESET)
     pyconio.textcolor(pyconio.RESET)
     pyconio.gotoxy(20,20)
@@ -133,10 +125,10 @@ def setting_adjust(setting, label, min_val, max_val):
     while key != pyconio.ENTER:
         if key == pyconio.UP:
             if setting < max_val:
-                setting += 1
+                setting += delta
         elif key == pyconio.DOWN:
             if setting > min_val:
-                setting -= 1
+                setting -= delta
         elif key == pyconio.ESCAPE:
             setting = initial
             break
@@ -165,7 +157,7 @@ def options(pos, settings=None):
     key = pyconio.getch()
     while key != pyconio.ESCAPE:
         key = pyconio.getch()
-    main_menu(settings)
+    return main_menu(settings)
 
 
 class Options:
@@ -188,6 +180,9 @@ class Score:
 
     def __str__(self):
         return "{}: {} pts".format(self.name, self.points)
+
+    def __int__(self):
+        return self.points
 
 
 def get_scores():
@@ -212,6 +207,7 @@ def get_scores():
 
 def list_scores(scorelist, pos):
     pyconio.clrscr()
+    draw.logo()
     pyconio.gotoxy(pos[0], pos[1])
     pyconio.textcolor(pyconio.WHITE)
     if scorelist is None:
@@ -241,21 +237,26 @@ def list_scores(scorelist, pos):
     while key != pyconio.ESCAPE:
         key = pyconio.getch()
     pyconio.clrscr()
-    main_menu()
+    return main_menu()
 
 
 def add_score(score):
-    pyconio.write("Szép volt, dicsőséglistára kerültél!")
+    pyconio.gotoxy(20,20)
+    pyconio.textcolor(pyconio.RESET)
+    pyconio.textbackground(pyconio.RESET)
+    pyconio.write("Szép volt, dicsőséglistára kerültél!", end="\n")
+    pyconio.gotoxy(20,21)
     pyconio.normalmode()
     name = input("Add meg a neved: ")
     pyconio.rawmode()
     scorelist = get_scores()
     if scorelist is not None:
         scorelist.append(Score(name, score))
-        scorelist.sort(key=self.points, reverse=True)
-        idx = scorelist.index(score)
+        scorelist.sort(key=int, reverse=True)
         if len(scorelist) > 5:
             scorelist.pop(-1)
+    else:
+        scorelist = [Score(name, score)]
 
     return scorelist
 
@@ -264,6 +265,3 @@ def write_score(scorelist):
     with open("highscores.txt", "wt") as f:
         for score in scorelist:
             f.write("{}: {}\n".format(score.name, score.points))
-
-
-main_menu()

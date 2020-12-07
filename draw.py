@@ -65,6 +65,7 @@ def screen(tetro, field, next, points, level):
     nextsection(field, next)
     valsection(field, points, len(field)-1, "PTS:")
     valsection(field, level, len(field)-4, "LVL:")
+    valsection(field, len(field), 1, "SIZE:")
     tetro.print()
     pyconio.flush()
 
@@ -168,3 +169,26 @@ def cursor(show):
         print(csi + "?25h")
     else:
         print(csi + "?25l")
+
+
+def logo(file="logo.txt"):
+    """
+    Prints the content of the given file (or logo.txt),
+    used for printing the title Tetris, in Russian, with the original colors.
+    The different letters are separated with a pipe character in the file.
+    """
+    pyconio.clrscr()
+    pyconio.gotoxy(0,5)
+    pyconio.textbackground(pyconio.RESET)
+    pyconio.textcolor(pyconio.RESET)
+    colors = [pyconio.RED,pyconio.BROWN,pyconio.YELLOW,
+              pyconio.GREEN,pyconio.CYAN,pyconio.MAGENTA]
+    with open(file, "rt", encoding="utf-8") as logo:
+        for line in logo:
+            letters = line.rstrip("\n").split("|")
+            for letter in range(len(letters)):
+                pyconio.textcolor(colors[letter])
+                pyconio.write(letters[letter])
+            pyconio.write("\n")
+
+    pyconio.flush()

@@ -4,6 +4,7 @@ import pyconio
 import time
 import control
 import draw
+import menu
 
 def mainloop(tetro, field, next, points=0, level=1):
     """
@@ -35,6 +36,12 @@ def mainloop(tetro, field, next, points=0, level=1):
                             next = control.store_regen(last, field, next)
                         else:
                             ingame = [False, points]
+                            scores = menu.get_scores()
+                            if points > scores[-1].points:
+                                menu.write_score(menu.add_score(points))
+                            draw.logo("game_over.txt")
+                            time.sleep(1)
+                            return main()
                     else:
                         tetro.pos[1] += 1
                 else:
@@ -52,16 +59,35 @@ def mainloop(tetro, field, next, points=0, level=1):
             if points >= level**2 * 1000:
                 level += 1
                 draw.screen(tetro, field, next, points, level)
-        draw.cursor(True)
+        # Pause
+        pausechoice = menu.pause()
+        if pausechoice == "save":
+            control.save_game(tetro, field, next, points, level)
+            return mainloop(tetro, field, next, points, level)
+        if pausechoice == "continue":
+            return mainloop(tetro, field, next, points, level)
 
 
-def main(mode="new", fieldsize=20, level=1):
+def game_init(mode, fieldsize, level):
     if mode == "new":
         field = control.make_field(fieldsize)
         next = control.make_random([fieldsize * 2,0])
         mainloop(control.make_random([fieldsize//4,0]), field, next, 0, level)
     elif mode == "load":
         (field, shape, pos, next, points, level) = control.load_game("save.txt")
+        fieldsize = len(field)
         tetro = draw.Tetromino(shape, pos[0], pos[1])
         next = draw.Tetromino(next, fieldsize * 2, 0)
         mainloop(tetro, field, next, points, level)
+
+
+def main():
+    selected = menu.main_menu()
+    if selected is None or selected == False:
+        return
+    else:
+        (mode, fieldsize, level) = selected
+        game_init(mode, fieldsize, level)
+
+
+main()
