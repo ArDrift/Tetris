@@ -55,11 +55,11 @@ def mainloop(tetro, field, next, points=0, level=1):
         draw.cursor(True)
 
 
-def main(mode="new", fieldsize=20):
+def main(mode="new", fieldsize=20, level=1):
     if mode == "new":
         field = control.make_field(fieldsize)
         next = control.make_random([fieldsize * 2,0])
-        mainloop(control.make_random([5,0]), field, next)
+        mainloop(control.make_random([fieldsize//4,0]), field, next, 0, level)
     elif mode == "load":
         (field, shape, pos, next, points, level) = control.load_game("save.txt")
         tetro = draw.Tetromino(shape, pos[0], pos[1])
