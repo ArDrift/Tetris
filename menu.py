@@ -37,8 +37,8 @@ def pause():
 def menu(buttons, data=None):
     pyconio.textcolor(pyconio.WHITE)
     buttons[0].active = True
+    draw.logo()
     while True:
-        draw.logo()
         for btn in buttons:
             if btn.active:
                 pyconio.textbackground(pyconio.WHITE)
@@ -241,13 +241,18 @@ def list_scores(scorelist, pos):
 
 
 def add_score(score):
-    pyconio.gotoxy(20,20)
+    pyconio.clrscr()
+    draw.logo()
+    pyconio.gotoxy(13,20)
     pyconio.textcolor(pyconio.RESET)
     pyconio.textbackground(pyconio.RESET)
     pyconio.write("Szép volt, dicsőséglistára kerültél!", end="\n")
-    pyconio.gotoxy(20,21)
+    pyconio.gotoxy(13,21)
     pyconio.normalmode()
-    name = input("Add meg a neved: ")
+    pyconio.write("Add meg a neved (ne használj ':'-ot):", end="\n")
+    draw.cursor(True)
+    name = input("                         ")
+    draw.cursor(False)
     pyconio.rawmode()
     scorelist = get_scores()
     if scorelist is not None:

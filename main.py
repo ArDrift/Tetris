@@ -37,7 +37,10 @@ def mainloop(tetro, field, next, points=0, level=1):
                         else:
                             ingame = [False, points]
                             scores = menu.get_scores()
-                            if points > scores[-1].points:
+                            if scores is not None:
+                                if points > scores[-1].points:
+                                    menu.write_score(menu.add_score(points))
+                            else:
                                 menu.write_score(menu.add_score(points))
                             draw.logo("game_over.txt")
                             time.sleep(1)
