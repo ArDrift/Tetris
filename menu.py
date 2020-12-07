@@ -49,7 +49,7 @@ def menu(buttons, data=None):
             pyconio.gotoxy(20, 20+buttons.index(btn))
             pyconio.write(btn)
 
-            pyconio.gotoxy(15, 30)
+            pyconio.gotoxy(15, 29)
             pyconio.textcolor(pyconio.RESET)
             pyconio.textbackground(pyconio.RESET)
             pyconio.write("Irányítás: ↑ ↓ ENTER ESC")
@@ -115,9 +115,9 @@ def setting_adjust(setting, label, min_val, max_val, delta=1):
     pyconio.textcolor(pyconio.RESET)
     pyconio.gotoxy(20,20)
     pyconio.write("{}: {:3}".format(label, setting), flush=True)
-    pyconio.gotoxy(20,30)
+    pyconio.gotoxy(20,28)
     pyconio.write("Mentés: ENTER", flush=True)
-    pyconio.gotoxy(20,31)
+    pyconio.gotoxy(20,29)
     pyconio.write("Vissza: ESC", flush=True)
     initial = setting
     pyconio.rawmode()

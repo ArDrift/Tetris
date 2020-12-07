@@ -83,7 +83,7 @@ def game_init(mode, fieldsize, level):
         else:
             pyconio.gotoxy(5,20)
             pyconio.write("Nem található mentés, biztosan mentettél már?")
-            pyconio.gotoxy(20, 30)
+            pyconio.gotoxy(20, 29)
             pyconio.write("Vissza: ESC")
             key = pyconio.getch()
             while key != pyconio.ESCAPE:
