@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pyconio
+import platform
 
 def ground(field):
     """
@@ -164,11 +165,12 @@ class Tetromino:
                 pyconio.write(c)
 
 def cursor(show):
-    csi = "\033["
-    if show:
-        print(csi + "?25h")
-    else:
-        print(csi + "?25l")
+    if platform.system() != "Windows":
+        csi = "\033["
+        if show:
+            print(csi + "?25h")
+        else:
+            print(csi + "?25l")
 
 
 def logo(file="logo.txt"):
