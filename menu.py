@@ -249,7 +249,7 @@ def add_score(score):
     pyconio.write("Szép volt, dicsőséglistára kerültél!")
     pyconio.gotoxy(13,22)
     pyconio.normalmode()
-    pyconio.write("Add meg a neved (ne használj ':'-ot):")
+    pyconio.write("Add meg a neved (ne használj ':'-ot):", end="\n")
     draw.cursor(True)
     pyconio.flush()
     name = input("                         ")
