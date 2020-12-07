@@ -15,7 +15,7 @@ def draw_logo(file="logo.txt"):
     pyconio.textcolor(pyconio.RESET)
     colors = [pyconio.RED,pyconio.BROWN,pyconio.YELLOW,
               pyconio.GREEN,pyconio.CYAN,pyconio.MAGENTA]
-    with open(file, "rt") as logo:
+    with open(file, "rt", encoding="utf-8") as logo:
         for line in logo:
             letters = line.rstrip("\n").split("|")
             for letter in range(len(letters)):
