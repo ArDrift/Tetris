@@ -193,33 +193,37 @@ def save_game(tetro, field, next, points, level):
 
 
 def load_game(file):
-    with open(file, "rt") as f:
-        field = []
-        section = 0
-        for line in f:
-            # Change section
-            if line == "\n":
-                section += 1
-            # Load field
-            elif section == 0:
-                sor = []
-                for elem in line.rstrip("\n").split(" "):
-                    if elem == "0":
-                        sor.append(int(elem))
-                    else:
-                        sor.append(elem)
-                field.append(sor)
-            # Tetro
-            elif section == 1:
-                shape = line.split(" ")[0]
-                pos = [int(line.split(" ")[1]),
-                       int(line.rstrip("\n").split(" ")[2])]
-            # Next
-            elif section == 2:
-                next = line.rstrip("\n")
-            elif section == 3:
-                pts = int(line.rstrip("\n"))
-            elif section == 4:
-                lvl = int(line.rstrip("\n"))
+    try:
+        with open(file, "rt") as f:
+            field = []
+            section = 0
+            for line in f:
+                # Change section
+                if line == "\n":
+                    section += 1
+                # Load field
+                elif section == 0:
+                    sor = []
+                    for elem in line.rstrip("\n").split(" "):
+                        if elem == "0":
+                            sor.append(int(elem))
+                        else:
+                            sor.append(elem)
+                    field.append(sor)
+                # Tetro
+                elif section == 1:
+                    shape = line.split(" ")[0]
+                    pos = [int(line.split(" ")[1]),
+                           int(line.rstrip("\n").split(" ")[2])]
+                # Next
+                elif section == 2:
+                    next = line.rstrip("\n")
+                elif section == 3:
+                    pts = int(line.rstrip("\n"))
+                elif section == 4:
+                    lvl = int(line.rstrip("\n"))
+    except FileNotFoundError:
+        return None
+
 
     return (field, shape, pos, next, pts, lvl)

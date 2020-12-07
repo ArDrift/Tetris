@@ -77,7 +77,18 @@ def game_init(mode, fieldsize, level):
         next = control.make_random([fieldsize * 2,0])
         mainloop(control.make_random([fieldsize//4,0]), field, next, 0, level)
     elif mode == "load":
-        (field, shape, pos, next, points, level) = control.load_game("save.txt")
+        loaded = control.load_game("save.txt")
+        if loaded is not None:
+            (field, shape, pos, next, points, level) = loaded
+        else:
+            pyconio.gotoxy(5,20)
+            pyconio.write("Nem található mentés, biztosan mentettél már?")
+            pyconio.gotoxy(20, 30)
+            pyconio.write("Vissza: ESC")
+            key = pyconio.getch()
+            while key != pyconio.ESCAPE:
+                key = pyconio.getch()
+            return main()
         fieldsize = len(field)
         tetro = draw.Tetromino(shape, pos[0], pos[1])
         next = draw.Tetromino(next, fieldsize * 2, 0)
