@@ -8,12 +8,11 @@ import menu
 
 def mainloop(tetro, field, next, points=0, level=1):
     """
-    Prints the field and the shape selected in main, in its given position,
-    then you can control it with UP-DOWN-LEFT-RIGHT as in the Tetris game.
-    You can quit with the ESCAPE key.
+    Prints the field and the currently active tetromino to its given position.
+    While ingame, you can control it with UP-DOWN-LEFT-RIGHT as in Tetris.
+    Pause the loop with the ESC key, if you choose continue, the current loop
+    ends, and is called again with the current parameters.
     """
-    pyconio.settitle("Tetris")
-    draw.cursor(False)
     game_sec = time.time()
     draw.screen(tetro, field, next, points, level)
     ingame = [True, 0]
@@ -21,6 +20,7 @@ def mainloop(tetro, field, next, points=0, level=1):
     with pyconio.rawkeys():
         while ingame[0]:
             current_sec = time.time()
+            # Control mechanism
             if pyconio.kbhit():
                 ingame = control.ingame(tetro, field)
                 points += ingame[1] * level
@@ -34,27 +34,40 @@ def mainloop(tetro, field, next, points=0, level=1):
                             next.pos = [5,0]
                             tetro = next
                             next = control.store_regen(last, field, next)
+                        # Game over if tetro hits another one, while Y pos is <1
                         else:
                             ingame = [False, points]
                             pyconio.clrscr()
                             draw.logo("game_over.txt")
                             time.sleep(1)
+                            # Add to top scores if needed
                             scores = menu.get_scores()
-                            if scores is not None:
+                            if scores is not None and scores != -1:
                                 if points > scores[-1].points:
                                     time.sleep(1)
-                                    menu.write_score(menu.add_score(points))
+                                    scorechoice = menu.add_score(points)
+                                    if scorechoice is not None:
+                                        menu.write_score(scorechoice)
+                            elif scores == -1:
+                                pyconio.gotoxy(12, 25)
+                                pyconio.write("Hibás dicsőséglista!", end="\n")
+                                pyconio.gotoxy(8, 26)
+                                pyconio.write("Ellenőrizd a highscores.txt-t!")
+                                pyconio.flush()
+                                time.sleep(2.5)
                             else:
                                 time.sleep(1)
                                 menu.write_score(menu.add_score(points))
                             return main()
                     else:
                         tetro.pos[1] += 1
+                # When hit, save tetro and generate new one.
                 else:
                     last = tetro
-                    next.pos = [5,0]
+                    next.pos = [len(field) // 4, 0]
                     tetro = next
                     next = control.store_regen(last, field, next)
+                # Game ticks
                 game_sec += control.speed_sec(level)
                 draw.screen(tetro, field, next, points, level)
             # Line clear
@@ -77,6 +90,11 @@ def mainloop(tetro, field, next, points=0, level=1):
 
 
 def game_init(mode, fieldsize, level):
+    """
+    Initialize the game depending on the given mode, either from scratch,
+    or by loading an existing saved state.
+    This handles non-existing save files too.
+    """
     if mode == "new":
         field = control.make_field(fieldsize)
         next = control.make_random([fieldsize * 2,0])
@@ -101,8 +119,15 @@ def game_init(mode, fieldsize, level):
 
 
 def main():
+    """
+    Executes the main menu from the menu module, and initializes the game,
+    if the user selected play.
+    """
+    pyconio.settitle("Tetris")
+    draw.cursor(False)
     selected = menu.main_menu()
     if selected is None or selected == False:
+        draw.cursor(True)
         return
     else:
         (mode, fieldsize, level) = selected

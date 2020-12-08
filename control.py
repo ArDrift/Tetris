@@ -6,7 +6,8 @@ import pyconio
 
 def rotate(tetro):
     """
-    Rotates the tetromino clockwise.
+    Creates a new tetromino based on the input, rotated by 90° CW,
+    and returns with the rotated one.
     """
     newunits = []
     for elem in range(len(tetro.units[0])):
@@ -21,11 +22,21 @@ def rotate(tetro):
 
 
 def make_random(pos):
+    """
+    Chooses a random letter from the availble ones,
+    and returns with a newly created one, with the position given as parameter.
+    """
     shapes = ["I", "J", "L", "O", "S", "T", "Z"]
     return Tetromino(random.choice(shapes), pos[0], pos[1])
 
 
 def ingame(tetro, field):
+    """
+    This function handles the controlling mechanism of the given tetromino,
+    based on the matrix's current state. Returns True while ingame
+    and False on pause, in addition to the pluspoints (earned for moving the
+    tetromino down, also called as soft drop).
+    """
     pluspoints = 0
     key = pyconio.getch()
     if key == pyconio.UP:
@@ -55,12 +66,16 @@ def ingame(tetro, field):
         not hit(post_move(tetro, "right"), field):
             tetro.pos[0] += 1
     elif key == pyconio.ESCAPE:
-        return [False, pluspoints]
+        return (False, pluspoints)
 
-    return [True, pluspoints]
+    return (True, pluspoints)
 
 
 def post_move(tetro, dir):
+    """
+    Returns a newly created tetromino moved with 1 unit in the given direction,
+    used for examining if a move is possible before moving the actual tetromino.
+    """
     postshape = Tetromino(tetro.shape, tetro.pos[0], tetro.pos[1])
     postshape.units = tetro.units
     if dir == "down":
@@ -74,11 +89,15 @@ def post_move(tetro, dir):
 
 
 def move_valid(tetro, field):
+    """
+    Determine whether a tetromino is within the playing field or not.
+    This is mostly used in conjunction with the post_move function above.
+    """
     # Lower most y position
     lmostposy = len(tetro.units) - 1 + tetro.pos[1]
 
     rmostposx = rightmost(tetro) + tetro.pos[0]
-    # Outside of field (x or y)
+
     if tetro.pos[0] <= 0 or rmostposx > len(field[0]) or lmostposy > len(field):
         return False
 
@@ -86,6 +105,10 @@ def move_valid(tetro, field):
 
 
 def rightmost(tetro):
+    """
+    Returns the tetromino's rightmost unit's X position (list index),
+    relative to the upper leftmost (first) unit.
+    """
     rmost = 0
     for line in range(len(tetro.units)):
         for row in range(len(tetro.units[line])):
@@ -96,9 +119,13 @@ def rightmost(tetro):
 
 
 def hit(tetro, field):
+    """
+    Determines whether there already is a placed unit on the field,
+    in a position where the current tetromino also has a unit, so basically
+    if a tetromino hit another one or not (used in conjunction with post_move).
+    """
     for line in range(len(tetro.units)):
         for row in range(len(tetro.units[line])):
-            #Check for conflicting already placed tetromino
             if tetro.units[line][row] == 1 and \
             field[max(0, tetro.pos[1] + line - 1)]\
             [max(0, tetro.pos[0] + row - 1)] != 0:
@@ -107,6 +134,10 @@ def hit(tetro, field):
 
 
 def make_field(fsize):
+    """
+    Creates a 2D list filled with 0s, with the given size,
+    in a 2:1 height:width ratio.
+    """
     linelist = []
     rowlist = []
     for line in range(fsize):
@@ -119,6 +150,10 @@ def make_field(fsize):
 
 
 def update_field(tetro, field):
+    """
+    Updates the field with the tetrominos' units,
+    used when a tetromino gets placed.
+    """
     for line in range(len(tetro.units)):
         for row in range(len(tetro.units[line])):
             if tetro.units[line][row] == 1:
@@ -128,13 +163,20 @@ def update_field(tetro, field):
 
 
 def store_regen(tetro, field, next):
+    """
+    Updates the field with the placed tetromino,
+    and returns a randomly generated new one.
+    """
     update_field(tetro, field)
     tetro = next
-    next = make_random([len(field) * 2, 0])
+    next = make_random([len(field) // 4, 0])
     return next
 
 
 def line_full(field):
+    """
+    Checks if a line is full in the matrix.
+    """
     for line in field:
         if not 0 in line:
             return True
@@ -142,6 +184,11 @@ def line_full(field):
 
 
 def delete_full(field):
+    """
+    Deletes full lines in the matrix,
+    and returns pluspoints based on the no. of deleted lines.
+    The pointing scheme tries to follow the usual Tetris point system.
+    """
     pluspoints = 0
     for line in range(len(field)):
         if not 0 in field[line]:
@@ -164,11 +211,19 @@ def delete_full(field):
 
 
 def speed_sec(level):
-    # Formula taken from https://tetris.wiki/Marathon
+    """
+    Returns the time interval in seconds, based on the current level.
+    This is used for the fall mechanism, and to detect colliding tetrominos.
+    The formula is taken from https://tetris.wiki/Marathon.
+    """
     return (0.8 - ((level - 1) * 0.007)) ** (level - 1)
 
 
 def save_game(tetro, field, next, points, level):
+    """
+    Saves the game's state, including the matrix, current and next tetromino,
+    current points and level, to the save.txt, overriding an existing save.
+    """
     dest = open("save.txt", "wt")
     # Field
     for line in range(len(field)):
@@ -193,6 +248,11 @@ def save_game(tetro, field, next, points, level):
 
 
 def load_game(file):
+    """
+    Loads a save from the given file, and returns with the matrix,
+    current and next tetromino, current points and level, or returns None,
+    if the file was not found.
+    """
     try:
         with open(file, "rt") as f:
             field = []

@@ -5,8 +5,9 @@ import platform
 
 def ground(field):
     """
-    Prints the playing field according to the its current state,
-    indicated with box-drawing characters and block elements.
+    Prints the playing field (matrix) in its current state.
+    Boundaries are indicated with box-drawing characters,
+    and tetrominos with block elements.
     """
     pyconio.textcolor(pyconio.WHITE)
     pyconio.gotoxy(1, 0)
@@ -29,6 +30,11 @@ def ground(field):
 
 
 def nextsection(field, next):
+    """
+    Prints a section containing the tetromino to come,
+    after the current one is placed.
+    The box's position depends on the matrix's size.
+    """
     size = 10
     start_x = len(field) + size // 2
     start_y = len(field) // 2 - 3
@@ -50,6 +56,12 @@ def nextsection(field, next):
 
 
 def valsection(field, val, posy, label):
+    """
+    Prints a section that is used for displaying the points and levels,
+    as both the label and value should be given as parameters,
+    in addition to the y position of the box.
+    The box scales with the value's length, and has a height of 1 unit.
+    """
     pyconio.textcolor(pyconio.WHITE)
     pyconio.gotoxy(len(field) + len(field[0]) - len(label), posy+1)
     pyconio.write(label)
@@ -62,16 +74,24 @@ def valsection(field, val, posy, label):
 
 
 def screen(tetro, field, next, points, level):
+    """
+    Prints the ingame screen to the terminal, consisting of the matrix,
+    size-, points- and level sections, and the active tetromino.
+    """
     ground(field)
     nextsection(field, next)
+    valsection(field, len(field), 1, "SIZE:")
     valsection(field, points, len(field)-1, "PTS:")
     valsection(field, level, len(field)-4, "LVL:")
-    valsection(field, len(field), 1, "SIZE:")
     tetro.print()
     pyconio.flush()
 
 
 def get_color(shape):
+    """
+    Getter function used to create tetrominos
+    and recreate the matrix from a saved game, based on its letters.
+    """
     if shape == "I":
         return pyconio.CYAN
     elif shape == "J":
@@ -89,6 +109,10 @@ def get_color(shape):
 
 
 class Shape:
+    """
+    This class enables tetromino creation based on letters,
+    to be able to identify them more easily.
+    """
     def __init__(self, letter):
         if letter == "I":
              self.units = [[1, 1, 1, 1]]
@@ -109,7 +133,8 @@ class Shape:
 class Tetromino:
     """
     This class defines a tetromino (or tetrimino as in Tetris-language):
-    with its shape that consists of 4 units next to each other (0s and 1s in a 2D list),
+    with its shape that consists of 4 units,
+    next to each other (0s and 1s in a 2D list),
     its color based on the standard color scheme of the Tetris game,
     and its position (X, Y integers in a list).
     """
@@ -122,9 +147,11 @@ class Tetromino:
 
     def __str__(self):
         """
-        Returns the visual representation of a tetromino using Unicode block elements.
+        Returns the visual representation of a tetromino,
+        using Unicode block elements.
         Since the full block character has a size of 9x18 pixels (1:2 ratio),
-        each unit is represented by 2 full blocks (or 2 spaces where a unit should be left out).
+        each unit is represented by 2 full blocks,
+        or 2 spaces where a unit should be left out.
         """
         res = ""
         for sorszam in range(len(self.units)):
@@ -143,8 +170,9 @@ class Tetromino:
         """
         Prints the teromino to the screen.
         This method is required because of the newline character in the string.
-        Using this print, the tetrominoes' new lines will be written to their proper position,
-        not the beginning of the new line.
+        Using this print, the tetrominoes' new lines
+        will be written to their proper position,
+        not to the beginning of the new line.
         """
         newline = 0
         newrow = 0
@@ -164,7 +192,13 @@ class Tetromino:
                 pyconio.textcolor(self.color)
                 pyconio.write(c)
 
+
 def cursor(show):
+    """
+    Sends the ANSI escape sequence for hiding the terminal cursor.
+    Since this is not supported by the default Windows console,
+    there's no need to send anything.
+    """
     if platform.system() != "Windows":
         csi = "\033["
         if show:
@@ -175,13 +209,12 @@ def cursor(show):
 
 def logo(file="logo.txt"):
     """
-    Prints the content of the given file (or logo.txt),
-    used for printing the title Tetris, in Russian, with the original colors.
-    The different letters are separated with a pipe character in the file.
+    Prints the content of the given file under logos/ (or logo.txt as default),
+    used for printing the title Tetris (in Russian), with the original colors.
+    To use different colors for printing, a pipe character must be used as
+    separator between different sections.
     """
     pyconio.gotoxy(0,5)
-    pyconio.textbackground(pyconio.RESET)
-    pyconio.textcolor(pyconio.RESET)
     colors = [pyconio.RED,pyconio.BROWN,pyconio.YELLOW,
               pyconio.GREEN,pyconio.CYAN,pyconio.MAGENTA]
     with open("logos/{}".format(file), "rt", encoding="utf-8") as logo:
@@ -193,3 +226,5 @@ def logo(file="logo.txt"):
             pyconio.write("\n")
 
     pyconio.flush()
+    pyconio.textbackground(pyconio.RESET)
+    pyconio.textcolor(pyconio.RESET)

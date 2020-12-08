@@ -4,6 +4,10 @@ import pyconio
 import draw
 
 class Button:
+    """
+    Defines a button used for menus, including its text, function,
+    and if it's currently selected or not.
+    """
     def __init__(self, text, function):
         self.text = text
         self.function = function
@@ -13,7 +17,11 @@ class Button:
     def __str__(self):
         return self.text
 
+
 def main_menu(settings=None):
+    """
+    Main menu with the listed buttons, and saved settings, optionally.
+    """
     pyconio.clrscr()
     buttons = [Button("Játék indítása", "start"),
                Button("Dicsőséglista", "toplist"),
@@ -27,6 +35,9 @@ def main_menu(settings=None):
 
 
 def pause():
+    """
+    Ingame pause menu.
+    """
     pyconio.clrscr()
     buttons = [Button("Játék folytatása", "continue"),
                Button("Mentés", "save"),
@@ -35,6 +46,9 @@ def pause():
 
 
 def save_menu():
+    """
+    Menu after save, asking the user to either continue or quit the game.
+    """
     pyconio.clrscr()
     pyconio.gotoxy(10,18)
     pyconio.write("Sikeres mentés, folytatod a játékot?", flush=True)
@@ -43,7 +57,26 @@ def save_menu():
     return menu(buttons)
 
 
+def save_topscore():
+    """
+    Menu after having earned a top score, save it, or not.
+    """
+    pyconio.gotoxy(13,17)
+    pyconio.write("Szép volt, dicsőséglistára kerültél!", flush=True)
+    pyconio.gotoxy(15,18)
+    pyconio.write("Szeretnéd menteni a pontszámod?", flush=True)
+    buttons = [Button("Pontszám mentése", "continue"),
+               Button("Kilépés a főmenübe", "quit")]
+    return menu(buttons)
+
+
 def menu(buttons, data=None):
+    """
+    Common menu mechanism, including the indication of the selected button
+    and navigation. Returns None if the user selected quit
+    (either by pressing ESC or selecting the option),
+    or executes the selected function otherwise, with optional data.
+    """
     pyconio.textcolor(pyconio.WHITE)
     buttons[0].active = True
     draw.logo()
@@ -86,8 +119,14 @@ def menu(buttons, data=None):
 
 
 def select(func, data=None):
+    """
+    List of available functions in the menus. In some cases the menu outputs
+    are handled locally, when that is needed for the functionality.
+    (When working with local variables that are not available
+    in this module.)
+    """
     pyconio.clrscr()
-    # Main menu
+    # Used in main menu
     if func == "start":
         if data is not None:
             return ("new", data.size, data.level)
@@ -101,23 +140,28 @@ def select(func, data=None):
     elif func == "load":
         return ("load", 20, 1)
         pyconio.clrscr()
+    # Common quit mechanism
     elif func == "quit":
         pyconio.textbackground(pyconio.RESET)
         pyconio.textcolor(pyconio.RESET)
         pyconio.clrscr()
-        draw.cursor(True)
         return None
     # Options menu
     elif func == "size":
         return (func, setting_adjust(data.size, "Méret", 20, 50, 2))
     elif func == "level":
         return (func, setting_adjust(data.level, "Kezdő szint", 1, 10))
-    # Pause menu
+    # Pause, save, topscore save menu
     else:
         return func
 
 
 def setting_adjust(setting, label, min_val, max_val, delta=1):
+    """
+    Used in the options menu, lets the user change the default options
+    with the UP and DOWN keys. The actual setting, its label,
+    value interval (and granularity) should be given as parameters.
+    """
     draw.logo()
     pyconio.textbackground(pyconio.RESET)
     pyconio.textcolor(pyconio.RESET)
@@ -145,6 +189,11 @@ def setting_adjust(setting, label, min_val, max_val, delta=1):
 
 
 def options(pos, settings=None):
+    """
+    Options menu with the listed buttons, creating an Options object that
+    stores the current settings. If settings are changed,
+    those are then passed to the other menus, to make use of them when needed.
+    """
     pyconio.clrscr()
     pyconio.gotoxy(pos[0], pos[1])
     buttons = [Button("Pálya mérete", "size"),
@@ -165,25 +214,43 @@ def options(pos, settings=None):
 
 
 class Options:
+    """
+    Object for storing the matrix's size and starting level of the game.
+    Defaults to 20 and 1 as per Tetris default values.
+    """
     def __init__(self, size=20, level=1):
         self.size = size
         self.level = level
 
 
 class Score:
+    """
+    Object that stores the name and points of the topscorer.
+    """
     def __init__(self, name, points):
         self.name = name
         self.points = points
 
 
     def __str__(self):
+        """
+        Used when displaying the toplist.
+        """
         return "{}: {} pts".format(self.name, self.points)
 
     def __int__(self):
+        """
+        Used when sorting the toplist, based on the scores.
+        """
         return self.points
 
 
 def get_scores():
+    """
+    Returns the scorelist read from highscores.txt,
+    which contains Score objects. Returns None if the file was not found,
+    and -1 if a point cannot be converted to an integer.
+    """
     scores = []
     try:
         with open("highscores.txt", "rt") as f:
@@ -204,6 +271,12 @@ def get_scores():
 
 
 def list_scores(scorelist, pos, data=None):
+    """
+    Lists the scores from the given scorelist to the given position.
+    Adds numbering and colors (for the top 3) to the list elements,
+    and prints out the proper errors when needed. Returns to the main menu,
+    with optional data if passed.
+    """
     pyconio.clrscr()
     draw.logo()
     pyconio.gotoxy(pos[0], pos[1])
@@ -212,7 +285,7 @@ def list_scores(scorelist, pos, data=None):
         pyconio.gotoxy(pos[0]-15, pos[1])
         pyconio.write("A file nem található, biztosan játszottál már?")
     elif scorelist == -1:
-        pyconio.gotoxy(pos[0]-13, pos[1])
+        pyconio.gotoxy(pos[0]-10, pos[1])
         pyconio.write("Hibás file, ellenőrizd a pontszámokat!")
     else:
         for i in range(len(scorelist)):
@@ -227,7 +300,7 @@ def list_scores(scorelist, pos, data=None):
             pyconio.gotoxy(pos[0], pos[1]+i)
             pyconio.write("{}. {}".format(i+1, scorelist[i]))
 
-    pyconio.gotoxy(pos[0], pos[1]+pos[1]//2)
+    pyconio.gotoxy(pos[0]+2, pos[1]+pos[1]//2)
     pyconio.write("Vissza: ESC")
     pyconio.flush()
     pyconio.rawmode()
@@ -239,36 +312,46 @@ def list_scores(scorelist, pos, data=None):
 
 
 def add_score(score):
+    """
+    Prompts the user to input their name, and appends the created Score object
+    to its proper position in the scorelist.
+    Returns None if the user decided not to save their score,
+    or otherwise the scorelist.
+    """
     pyconio.clrscr()
-    draw.logo()
-    pyconio.gotoxy(13,20)
-    pyconio.textcolor(pyconio.RESET)
-    pyconio.textbackground(pyconio.RESET)
-    pyconio.write("Szép volt, dicsőséglistára kerültél!")
-    pyconio.gotoxy(13,22)
-    pyconio.normalmode()
-    pyconio.write("Add meg a neved (ne használj ':'-ot):", end="\n")
-    draw.cursor(True)
-    pyconio.flush()
-    name = input("                         ")
-    while ":" in name:
-        pyconio.write("Hibás név, kérlek add meg ':' nélkül.", end="\n")
+    if save_topscore() == "continue":
+        draw.logo()
+        pyconio.gotoxy(13,22)
+        pyconio.normalmode()
+        pyconio.write("Add meg a neved (ne használj ':'-ot):", end="\n")
+        draw.cursor(True)
+        pyconio.flush()
         name = input("                         ")
-    draw.cursor(False)
-    pyconio.rawmode()
-    scorelist = get_scores()
-    if scorelist is not None:
-        scorelist.append(Score(name, score))
-        scorelist.sort(key=int, reverse=True)
-        if len(scorelist) > 5:
-            scorelist.pop(-1)
+        while ":" in name:
+            pyconio.write("Hibás név, kérlek add meg ':' nélkül.", end="\n")
+            name = input("                         ")
+        draw.cursor(False)
+        pyconio.rawmode()
+        scorelist = get_scores()
+        if scorelist is not None:
+            scorelist.append(Score(name, score))
+            scorelist.sort(key=int, reverse=True)
+            if len(scorelist) > 5:
+                scorelist.pop(-1)
+        elif scorelist == -1:
+            pyconio.gotoxy(15, 26)
+            pyconio.write("Hibás file, ellenőrizd a pontszámokat!")
+        else:
+            scorelist = [Score(name, score)]
+        return scorelist
     else:
-        scorelist = [Score(name, score)]
-
-    return scorelist
+        return None
 
 
 def write_score(scorelist):
+    """
+    Writes the scorelist to highscores.txt, in a 'name: points' format.
+    """
     with open("highscores.txt", "wt") as f:
         for score in scorelist:
             f.write("{}: {}\n".format(score.name, score.points))
