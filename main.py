@@ -41,8 +41,10 @@ def mainloop(tetro, field, next, points=0, level=1):
                             scores = menu.get_scores()
                             if scores is not None:
                                 if points > scores[-1].points:
+                                    time.sleep(1)
                                     menu.write_score(menu.add_score(points))
                             else:
+                                time.sleep(1)
                                 menu.write_score(menu.add_score(points))
                             return main()
                     else:
