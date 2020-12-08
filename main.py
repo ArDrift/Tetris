@@ -36,6 +36,7 @@ def mainloop(tetro, field, next, points=0, level=1):
                             next = control.store_regen(last, field, next)
                         else:
                             ingame = [False, points]
+                            pyconio.clrscr()
                             draw.logo("game_over.txt")
                             time.sleep(1)
                             scores = menu.get_scores()

@@ -252,7 +252,7 @@ def add_score(score):
     pyconio.flush()
     name = input("                         ")
     while ":" in name:
-        pyconio.write("Hibás név: {}, kérlek add meg ':' nélkül.".format(name))
+        pyconio.write("Hibás név, kérlek add meg ':' nélkül.", end="\n")
         name = input("                         ")
     draw.cursor(False)
     pyconio.rawmode()
