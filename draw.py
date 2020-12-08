@@ -179,7 +179,6 @@ def logo(file="logo.txt"):
     used for printing the title Tetris, in Russian, with the original colors.
     The different letters are separated with a pipe character in the file.
     """
-    pyconio.clrscr()
     pyconio.gotoxy(0,5)
     pyconio.textbackground(pyconio.RESET)
     pyconio.textcolor(pyconio.RESET)

@@ -36,14 +36,14 @@ def mainloop(tetro, field, next, points=0, level=1):
                             next = control.store_regen(last, field, next)
                         else:
                             ingame = [False, points]
+                            draw.logo("game_over.txt")
+                            time.sleep(1)
                             scores = menu.get_scores()
                             if scores is not None:
                                 if points > scores[-1].points:
                                     menu.write_score(menu.add_score(points))
                             else:
                                 menu.write_score(menu.add_score(points))
-                            draw.logo("game_over.txt")
-                            time.sleep(1)
                             return main()
                     else:
                         tetro.pos[1] += 1
@@ -66,9 +66,11 @@ def mainloop(tetro, field, next, points=0, level=1):
         pausechoice = menu.pause()
         if pausechoice == "save":
             control.save_game(tetro, field, next, points, level)
-            return mainloop(tetro, field, next, points, level)
+            pausechoice = menu.save_menu()
         if pausechoice == "continue":
             return mainloop(tetro, field, next, points, level)
+        elif pausechoice is None:
+            return main()
 
 
 def game_init(mode, fieldsize, level):

@@ -30,7 +30,16 @@ def pause():
     pyconio.clrscr()
     buttons = [Button("Játék folytatása", "continue"),
                Button("Mentés", "save"),
-               Button("Kilépés", "quit")]
+               Button("Kilépés a főmenübe", "quit")]
+    return menu(buttons)
+
+
+def save_menu():
+    pyconio.clrscr()
+    pyconio.gotoxy(10,18)
+    pyconio.write("Sikeres mentés, folytatod a játékot?", flush=True)
+    buttons = [Button("Játék folytatása", "continue"),
+               Button("Kilépés a főmenübe", "quit")]
     return menu(buttons)
 
 
@@ -73,8 +82,7 @@ def menu(buttons, data=None):
             else:
                 buttons[active-1].active = True
         elif key == pyconio.ESCAPE:
-            select("quit")
-            return False
+            return select("quit")
 
 
 def select(func, data=None):
@@ -87,7 +95,7 @@ def select(func, data=None):
             return ("new", 20, 1)
         pyconio.clrscr()
     elif func == "toplist":
-        return list_scores(get_scores(), (20,20))
+        return list_scores(get_scores(), (20,20), data)
     elif func == "options":
         return options((20, 20), data)
     elif func == "load":
@@ -101,7 +109,7 @@ def select(func, data=None):
         return None
     # Options menu
     elif func == "size":
-        return (func, setting_adjust(data.size, "Méret", 20, 100, 2))
+        return (func, setting_adjust(data.size, "Méret", 20, 50, 2))
     elif func == "level":
         return (func, setting_adjust(data.level, "Kezdő szint", 1, 10))
     # Pause menu
@@ -115,10 +123,8 @@ def setting_adjust(setting, label, min_val, max_val, delta=1):
     pyconio.textcolor(pyconio.RESET)
     pyconio.gotoxy(20,20)
     pyconio.write("{}: {:3}".format(label, setting), flush=True)
-    pyconio.gotoxy(20,28)
-    pyconio.write("Mentés: ENTER", flush=True)
-    pyconio.gotoxy(20,29)
-    pyconio.write("Vissza: ESC", flush=True)
+    pyconio.gotoxy(15,29)
+    pyconio.write("Irányítás: ↑ ↓ ENTER ESC")
     initial = setting
     pyconio.rawmode()
     key = pyconio.getch()
@@ -145,31 +151,23 @@ def options(pos, settings=None):
                Button("Kezdő szint", "level")]
     if settings is None:
         settings = Options()
-    try:
-        (selected, set_value) = menu(buttons, settings)
-    except TypeError:
-        return settings
+    choice = menu(buttons, settings)
+    if choice is not None:
+        (selected, set_value) = choice
+    else:
+        return main_menu(settings)
     if selected == "size":
         settings.size = set_value
     elif selected == "level":
         settings.level = set_value
     pyconio.rawmode()
-    key = pyconio.getch()
-    while key != pyconio.ESCAPE:
-        key = pyconio.getch()
-    return main_menu(settings)
+    return options((20,20), settings)
 
 
 class Options:
-    def __init__(self, size=None, level=None):
-        if size is None:
-            self.size = 20
-        else:
-            self.size = size
-        if level is None:
-            self.level = 1
-        else:
-            self.level = level
+    def __init__(self, size=20, level=1):
+        self.size = size
+        self.level = level
 
 
 class Score:
@@ -205,7 +203,7 @@ def get_scores():
         return -1
 
 
-def list_scores(scorelist, pos):
+def list_scores(scorelist, pos, data=None):
     pyconio.clrscr()
     draw.logo()
     pyconio.gotoxy(pos[0], pos[1])
@@ -237,7 +235,7 @@ def list_scores(scorelist, pos):
     while key != pyconio.ESCAPE:
         key = pyconio.getch()
     pyconio.clrscr()
-    return main_menu()
+    return main_menu(data)
 
 
 def add_score(score):
@@ -253,6 +251,9 @@ def add_score(score):
     draw.cursor(True)
     pyconio.flush()
     name = input("                         ")
+    while ":" in name:
+        pyconio.write("Hibás név: {}, kérlek add meg ':' nélkül.".format(name))
+        name = input("                         ")
     draw.cursor(False)
     pyconio.rawmode()
     scorelist = get_scores()
