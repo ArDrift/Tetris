@@ -15,7 +15,7 @@ def mainloop(tetro, field, next, points=0, level=1):
     """
     game_sec = time.time()
     draw.screen(tetro, field, next, points, level)
-    ingame = [True, 0]
+    ingame = (True, 0)
 
     with pyconio.rawkeys():
         while ingame[0]:
@@ -36,7 +36,7 @@ def mainloop(tetro, field, next, points=0, level=1):
                             next = control.store_regen(last, field, next)
                         # Game over if tetro hits another one, while Y pos is <1
                         else:
-                            ingame = [False, points]
+                            ingame = (False, points)
                             pyconio.clrscr()
                             draw.logo("game_over.txt")
                             time.sleep(1)
