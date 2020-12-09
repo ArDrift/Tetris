@@ -193,7 +193,6 @@ def delete_full(field):
     for line in range(len(field)):
         if not 0 in field[line]:
             for row in range(len(field[line])):
-                pyconio.gotoxy(line + 1, row + 2)
                 field[line][row] = 0
             pluspoints += 100
             for upperline in range(line - 1, -1, -1):
