@@ -42,12 +42,13 @@ def mainloop(tetro, field, next, points=0, level=1):
                             time.sleep(1)
                             # Add to top scores if needed
                             scores = menu.get_scores()
-                            if scores is not None and scores != -1:
+                            # If highscores.txt exists, is valid and not empty
+                            if scores not in (None, -1, []):
                                 if points > scores[-1].points:
-                                    time.sleep(1)
                                     scorechoice = menu.add_score(points)
                                     if scorechoice is not None:
                                         menu.write_score(scorechoice)
+                            # If invalid
                             elif scores == -1:
                                 pyconio.gotoxy(12, 25)
                                 pyconio.write("Hibás dicsőséglista!", end="\n")
@@ -55,9 +56,11 @@ def mainloop(tetro, field, next, points=0, level=1):
                                 pyconio.write("Ellenőrizd a highscores.txt-t!")
                                 pyconio.flush()
                                 time.sleep(2.5)
+                            # If doesn't exist yet or empty
                             else:
-                                time.sleep(1)
-                                menu.write_score(menu.add_score(points))
+                                scorechoice = menu.add_score(points)
+                                if scorechoice is not None:
+                                    menu.write_score(scorechoice)
                             return main()
                     else:
                         tetro.pos[1] += 1

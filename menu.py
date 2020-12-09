@@ -261,7 +261,7 @@ def get_scores():
                         name = linelist[section]
                     elif section == 1:
                         points = int(linelist[section])
-                scores.append(Score(name, points))
+                        scores.append(Score(name, points))
 
             return scores
     except FileNotFoundError:
@@ -280,7 +280,7 @@ def list_scores(scorelist, pos, data=None):
     pyconio.clrscr()
     draw.logo()
     pyconio.gotoxy(pos[0], pos[1])
-    pyconio.textcolor(pyconio.WHITE)
+    pyconio.textcolor(pyconio.RESET)
     if scorelist is None:
         pyconio.gotoxy(pos[0]-15, pos[1])
         pyconio.write("A file nem található, biztosan játszottál már?")
@@ -301,6 +301,7 @@ def list_scores(scorelist, pos, data=None):
             pyconio.write("{}. {}".format(i+1, scorelist[i]))
 
     pyconio.gotoxy(pos[0]+2, pos[1]+pos[1]//2)
+    pyconio.textcolor(pyconio.RESET)
     pyconio.write("Vissza: ESC")
     pyconio.flush()
     pyconio.rawmode()
