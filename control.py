@@ -211,7 +211,7 @@ def delete_full(field):
 
 def speed_sec(level):
     """
-    Returns the time interval in seconds, based on the current level.
+    Returns the time for a game tick in seconds, based on the current level.
     This is used for the fall mechanism, and to detect colliding tetrominos.
     The formula is taken from https://tetris.wiki/Marathon.
     """
